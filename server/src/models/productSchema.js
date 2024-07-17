@@ -25,7 +25,7 @@ const ProductModel = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     categoryId: {
       type: mongoose.Types.ObjectId,
