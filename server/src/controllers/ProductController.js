@@ -159,7 +159,6 @@ class ProductController {
       const data = await productSchema.find({
         name: new RegExp(keyword, "i"),
       });
-
       return res.status(200).json({
         message: "Search Product Successfully",
         data,
