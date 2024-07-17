@@ -20,7 +20,8 @@ class ProductController {
     try {
       const data = await productSchema
         .findById(req.params.id)
-        .populate("categoryId");
+        .populate("categoryId")
+        .populate("commentId");
       if (data) {
         return res.status(201).send({
           message: "GetProductById Successfully",

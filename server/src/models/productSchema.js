@@ -37,12 +37,6 @@ const ProductModel = new mongoose.Schema(
         ref: "comments",
       },
     ],
-    ratingId: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ratings",
-      },
-    ],
   },
   {
     timestamps: true,
