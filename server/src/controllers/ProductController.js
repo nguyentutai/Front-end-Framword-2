@@ -21,11 +21,17 @@ class ProductController {
       const data = await productSchema
         .findById(req.params.id)
         .populate("categoryId")
-        .populate("commentId");
+        .populate({
+          path: "commentId",
+          options: { default: [] },
+        });
       if (data) {
         return res.status(201).send({
           message: "GetProductById Successfully",
-          data,
+          data: {
+            ...data,
+            commentId: data.commentId || [],
+          },
         });
       }
     } catch (error) {
@@ -134,10 +140,7 @@ class ProductController {
     try {
       const data = await productSchema.findByIdAndUpdate(
         `${req.params.id}`,
-        {
-          status: true,
-          hide: true,
-        },
+        req.body.status,
         {
           new: true,
         }
@@ -153,6 +156,7 @@ class ProductController {
     }
   }
 
+  // Tìm kiếm sản phẩm theo name
   async searchProduct(req, res) {
     try {
       const keyword = req.query.keyword || "";
@@ -166,6 +170,36 @@ class ProductController {
     } catch (error) {
       return res.status(500).json({
         message: "searchProduct False",
+      });
+    }
+  }
+
+  // Phân trang sản phẩm
+
+  async pageProduct(req, res) {
+    try {
+      // Lấy thông tin trang hiện tại url || 1
+      const page = parseInt(req.query.page) || 1;
+      // Lấy số sản phẩm trên 1 trang tại url || 10
+      const limit = parseInt(req.query.limit) || 10;
+
+      // B1: Lấy ra tất cả sản phẩm find
+      // B2: Bỏ qua các sản phẩm ở trang trước đó
+      const data = await productSchema
+        .find()
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+      // Đếm ra tất cả sản phẩm có trong conllection products
+      const count = await productSchema.countDocuments();
+      return res.status(200).send({
+        data,
+        totalPages: Math.ceil(count / limit), // Làm tròn tổng số trang
+        currentPage: page,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error,
       });
     }
   }

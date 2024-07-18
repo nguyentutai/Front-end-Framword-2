@@ -11,12 +11,18 @@ const VoucherModel = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     discount: {
       type: Number,
       required: true,
     },
+    userId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -14,9 +14,9 @@ categoryRouter.post("/", CategoryModel.postCategory);
 categoryRouter.put("/:id", CategoryModel.updateCategory);
 // Sửa status danh mục
 categoryRouter.patch("/:id", CategoryModel.updateStatusCategory);
-// Xóa mềm danh mục
-categoryRouter.delete("/:id", CategoryModel.removeCategoryById);
 // Xóa cứng danh mục
-categoryRouter.delete("/:id", CategoryModel.softRemoveCategoryById);
+categoryRouter.delete("/:id", CategoryModel.removeCategoryById);
+// Xóa mềm danh mục
+categoryRouter.patch("/:id", CategoryModel.softRemoveCategoryById);
 
 export default categoryRouter;
