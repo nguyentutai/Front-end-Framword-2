@@ -30,10 +30,11 @@ const ProductModel = new mongoose.Schema(
     categoryId: {
       type: mongoose.Types.ObjectId,
       ref: "categorys",
+      default: "66979f7841d46e0b5018548f",
     },
     commentId: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: "comments",
       },
     ],

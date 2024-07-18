@@ -19,7 +19,6 @@ const CategoryModel = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "products",
-        default: "66979f7841d46e0b5018548f",
       },
     ],
   },

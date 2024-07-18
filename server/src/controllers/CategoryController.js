@@ -3,7 +3,10 @@ import productSchema from "../models/productSchema.js";
 class CategoryController {
   async getAllCategorys(req, res) {
     try {
-      const data = await categorySchema.find().populate("productId").sort({createdAt: -1});
+      const data = await categorySchema
+        .find()
+        .populate("productId")
+        .sort({ createdAt: -1 });
       if (data) {
         return res.status(201).send({
           message: "GetAll Categorys Successfully",
@@ -71,23 +74,24 @@ class CategoryController {
 
   //update status category
 
-  async updateStatusCategory(req,res){
+  async updateStatusCategory(req, res) {
     try {
-      const {status}=req.body
-      const data = await categorySchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      const { status } = req.body;
+      const data = await categorySchema.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
       if (data) {
         return res.status(200).send({
-          message:'Update Status Successfully !',
-          data
-        })
+          message: "Update Status Successfully !",
+          data,
+        });
       }
     } catch (error) {
       return res.status(400).send(error.message);
     }
   }
-
-
-
 
   async removeCategoryById(req, res) {
     try {
@@ -128,10 +132,7 @@ class CategoryController {
     try {
       const data = await categorySchema.findByIdAndUpdate(
         `${req.params.id}`,
-        {
-          status: true,
-          hide: true,
-        },
+        req.body.status,
         {
           new: true,
         }

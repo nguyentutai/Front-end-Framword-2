@@ -4,7 +4,6 @@ const UserModel = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -17,6 +16,7 @@ const UserModel = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      default: "",
     },
     role: {
       type: String,
@@ -25,7 +25,7 @@ const UserModel = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     commentId: [
       {

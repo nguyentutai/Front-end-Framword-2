@@ -14,6 +14,10 @@ const CommentModel = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "users",
     },
+    productId: {
+      type: mongoose.Types.ObjectId,
+      ref: "products",
+    },
     status: {
       type: Boolean,
       default: false,
