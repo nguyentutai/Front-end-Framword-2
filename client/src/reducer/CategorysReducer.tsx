@@ -14,8 +14,9 @@ const CategorysReducer = (state: any, action: any) => {
         return action.payload
       })
     case "DELETE":
-
-      break;
+      return state.filter((item:ICategory)=>{
+        return item._id !== action.payload
+      })
 
     default:
       return state;
