@@ -6,4 +6,5 @@ export interface IProduct{
     price_discount:number,
     images:string[],
     status:boolean,
+    categoryId:string
 }

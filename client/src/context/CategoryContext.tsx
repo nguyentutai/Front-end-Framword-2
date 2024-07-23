@@ -12,6 +12,7 @@ export const CategorysContext = createContext( {} as {
     dispatch:any
 })
 
+
 const CategorysProvider=(props:Props)=>{
 
     const [categorys, dispatch] = useReducer(CategorysReducer, [] as ICategory[])
