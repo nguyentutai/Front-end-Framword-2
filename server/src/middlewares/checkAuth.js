@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import userSchema from "../models/userSchema";
 
 export const checkAuth = async (req, res, next) => {
   try {
@@ -16,6 +17,9 @@ export const checkAuth = async (req, res, next) => {
         message: "Bạn không có quyền truy cập",
       });
     }
+    const user = await userSchema.findById(decode._id);
+    // Đẩy dữ liệu lên response
+    req.user = user;
     next();
   } catch (error) {
     return res.status(400).send(error.message);

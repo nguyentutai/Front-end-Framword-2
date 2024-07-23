@@ -13,10 +13,12 @@ const CommentModel = new mongoose.Schema(
     userId: {
       type: mongoose.Types.ObjectId,
       ref: "users",
+      required: true,
     },
     productId: {
       type: mongoose.Types.ObjectId,
       ref: "products",
+      required: true,
     },
     status: {
       type: Boolean,

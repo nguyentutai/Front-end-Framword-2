@@ -36,8 +36,14 @@ class CategoryController {
 
   async postCategory(req, res) {
     try {
+      const checkSlug = await categorySchema.findOne({ slug: req.body.slug });
+      if (checkSlug) {
+        return res.status(400).send({
+          message: "Slug is infected",
+        });
+      }
       const data = await categorySchema.create(req.body);
-      res.status(200).json({
+      return res.status(200).json({
         status: true,
         message: "Add Category Successfully",
         data,
