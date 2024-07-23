@@ -2,26 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
-  *{
+@layer base {
+  * {
     font-family: "Roboto", sans-serif;
   }
-  
 }
-.active{
-  background-color: #1B95F2;
+.container-main {
+  @apply max-w-7xl mx-auto px-4;
+}
+.btn {
+  @apply leading-[40px] bg-white rounded-full inline-block font-bold text-sm px-6 transition ease-in-out duration-300;
+}
+.btn:hover {
+  @apply border border-white shadow-md bg-transparent text-white;
+}
+.active {
+  background-color: #1b95f2;
   color: white;
 }
 .focus\:ring-cyan-300:focus {
   --tw-ring-opacity: 0 !important;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 
-::-webkit-scrollbar-thumb{
-  background-color: #1B95F2;
+::-webkit-scrollbar-thumb {
+  background-color: #1b95f2;
   border-radius: 50px;
 }
