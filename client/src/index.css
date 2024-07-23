@@ -6,9 +6,22 @@
   *{
     font-family: "Roboto", sans-serif;
   }
+  
 }
-
 .active{
   background-color: #1B95F2;
   color: white;
+}
+.focus\:ring-cyan-300:focus {
+  --tw-ring-opacity: 0 !important;
+}
+
+::-webkit-scrollbar{
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb{
+  background-color: #1B95F2;
+  border-radius: 50px;
 }

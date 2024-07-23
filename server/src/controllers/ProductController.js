@@ -43,6 +43,7 @@ class ProductController {
       }
       // Thêm sản phẩm
       const data = await productSchema.create(req.body);
+      
       // lấy ra id sản phẩm thêm vào bảng category
       const catgoryId = await categorySchema.findByIdAndUpdate(
         data.categoryId,
