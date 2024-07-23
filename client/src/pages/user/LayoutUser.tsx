@@ -6,7 +6,7 @@ const LayoutUser = () => {
   return (
     <>
       <Header />
-      <main className="w-full">
+      <main className="w-full dark:bg-[#1C2329]">
         <Outlet />
       </main>
       <Footer />

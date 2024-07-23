@@ -57,7 +57,7 @@ const Banner = () => {
         src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1.jpg"
         alt=""
       /> */}
-      <Slider {...settings} ref={sliderRef}>
+      <Slider {...settings} ref={sliderRef} className="w-full">
         {BannerArray.map((item, index) => (
           <div key={index} className="relative">
             <div className="w-full">
@@ -80,6 +80,7 @@ const Banner = () => {
           </div>
         ))}
       </Slider>
+
       <div className="" style={{ textAlign: "center" }}>
         <div
           className="absolute top-[44%] left-[3%] bg-white rounded-full p-1.5 cursor-pointer"
