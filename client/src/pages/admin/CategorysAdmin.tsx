@@ -11,14 +11,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CategorySchemaValid from "../../schemaValid/CategorySchemaValid";
 import swal from "sweetalert";
 
-
 const CategorysAdmin = () => {
   const [openModal, setOpenModal] = useState(false);
   const [status, setStatus] = useState(true);
-  const { categorys, dispatch } = useContext(CategorysContext);
+  const {categorys, dispatch } = useContext(CategorysContext);
   const [slugCategory, setSlugCategory] = useState<string>("");
   const [AddOrUpdate, setAddOrUpdate] = useState<string>("ADD");
-  const [idCategory,setIdCategory]=useState<string>("");
+  const [idCategory, setIdCategory] = useState<string>("");
+  const [valueSearch,setvalueSearch]=useState<string>("")
+
   //list data categorys
   useEffect(() => {
     (async () => {
@@ -54,7 +55,6 @@ const CategorysAdmin = () => {
     }
   };
 
-  // add category
   const {
     register,
     formState: { errors },
@@ -63,7 +63,8 @@ const CategorysAdmin = () => {
   } = useForm<ICategory>({
     resolver: zodResolver(CategorySchemaValid),
   });
-// add or update
+
+  // add or update
   const onSubmit = async (dataForm: ICategory) => {
     switch (AddOrUpdate) {
       case "ADD":
@@ -91,7 +92,7 @@ const CategorysAdmin = () => {
             status,
           });
           setOpenModal(false);
-          setAddOrUpdate("ADD")
+          setAddOrUpdate("ADD");
           toast.success("Sửa danh mục thành công !");
           dispatch({
             type: "UPDATE",
@@ -110,12 +111,12 @@ const CategorysAdmin = () => {
   const fillDataCategory = async (id: string) => {
     try {
       const { data } = await instance.get(`categorys/${id}`);
-      const { _id, name,slug, status } = data.data;
-      reset({ name});
-      setIdCategory(_id)
-      setSlugCategory(slug)
-      setStatus(status)
-      setAddOrUpdate("UPDATE")
+      const { _id, name, slug, status } = data.data;
+      reset({ name });
+      setIdCategory(_id);
+      setSlugCategory(slug);
+      setStatus(status);
+      setAddOrUpdate("UPDATE");
     } catch (error) {
       console.log(error);
     }
@@ -132,40 +133,66 @@ const CategorysAdmin = () => {
       toast.error(`Lỗi ${error.response.data.message}`);
     }
   };
-// reset data 
+
+  // reset data
   useEffect(() => {
     (() => {
       reset({
         name: "",
       });
-      setAddOrUpdate("ADD")
-      setSlugCategory("")
-
+      setAddOrUpdate("ADD");
+      setSlugCategory("");
     })();
   }, [openModal === false]);
 
   return (
     <div className="categorys-admin">
-      <button
-        onClick={() => setOpenModal(true)}
-        className="flex items-center py-2 px-4 bg-primary text-util rounded-md hover:bg-util hover:text-primary hover:outline hover:outline-primary transition-all"
-      >
-        Thêm danh mục{" "}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6"
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => setOpenModal(true)}
+          className="flex items-center py-2 px-4 bg-primary text-util rounded-md hover:bg-util hover:text-primary hover:outline hover:outline-primary transition-all"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
+          Thêm danh mục{" "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+        </button>
+        <div className="border flex max-w-[200px] md:max-w-xs w-full items-center outline-none px-2 rounded-md">
+          <input
+            placeholder="Tìm theo tên: "
+            className="border-0 outline-none py-2 w-full text-sm"
+            onChange={(e)=>{
+              setvalueSearch(e.target.value)
+            }}
           />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+        </div>
+      </div>
+
       <Modal
         dismissible
         show={openModal}
@@ -248,9 +275,11 @@ const CategorysAdmin = () => {
         </thead>
         <tbody>
           {categorys &&
-            categorys.map((category, index) => {
+            categorys.filter((item)=>{
+              return item.name.toLowerCase().includes(valueSearch.toLowerCase())
+            }).map((category, index) => {
               return (
-                <tr className="*:border text-center h-12" key={category._id}>
+                <tr className="*:border text-center h-12 text-sm" key={category._id}>
                   <td>{index + 1}</td>
                   <td>{category.name}</td>
                   <td>{category.slug}</td>
