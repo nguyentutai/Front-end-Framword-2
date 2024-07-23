@@ -2,11 +2,11 @@ import Banner from "./Banner";
 
 const HomePage = () => {
   return (
-    <div className="w-full">
+    <div className="w-full -mt-2">
       <section className="w-full">
         <Banner />
       </section>
-      <section className="container-main my-6">
+      <section className="container-main py-6 dark:text-white">
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 md:col-span-6 lg:col-span-3 flex gap-4 items-center border-r">
             <div>
