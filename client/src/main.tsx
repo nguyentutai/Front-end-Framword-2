@@ -12,28 +12,30 @@ import ProductsAdmin from "./pages/admin/ProductsAdmin.tsx";
 import CategorysProvider from "./context/CategoryContext.tsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProductProvider from "./context/ProductContext.tsx";
 import HomePage from "./components/User/HomePage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <CategorysProvider>
-        <Routes>
-          <Route path="" element={<App />}>
-            {/* User */}
-            <Route path="" element={<LayoutUser />}>
-              <Route index element={<HomePage />} />
-
-              <Route path="register" element={<Register />} />
-              <Route path="login" element={<Login />} />
+        <ProductProvider>
+          <Routes>
+            <Route path="" element={<App />}>
+              {/* User */}
+              <Route element={<LayoutUser />}>
+                <Route index element={<HomePage />} />
+                <Route path="register" element={<Register />} />
+                <Route path="login" element={<Login />} />
+              </Route>
+              {/* Admin */}
+              <Route path="admin" element={<LayoutAdmin />}>
+                <Route path="categorys" element={<CategorysAdmin />} />
+                <Route path="products" element={<ProductsAdmin />} />
+              </Route>
             </Route>
-            {/* Admin */}
-            <Route path="admin" element={<LayoutAdmin />}>
-              <Route path="categorys" element={<CategorysAdmin />} />
-              <Route path="products" element={<ProductsAdmin />} />
-            </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </ProductProvider>
       </CategorysProvider>
       <ToastContainer autoClose={3000} newestOnTop />
     </BrowserRouter>

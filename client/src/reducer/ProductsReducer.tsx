@@ -1,14 +1,14 @@
 import { IProduct } from "../interfaces/IProduct";
 
 const ProductsReducer = (state: any, action: any) => {
-  switch (action.payload) {
+  switch (action.type) {
     case "LIST":
       return action.payload;
     case "ADD":
       return [action.payload, ...state];
     case "UPDATE":
       return state.map((item: IProduct) => {
-        if (item._id !== action.payload) {
+        if (item._id !== action.payload._id) {
           return item;
         }
         return action.payload;

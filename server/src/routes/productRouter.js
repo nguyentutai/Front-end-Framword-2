@@ -17,6 +17,8 @@ productRouter.use("/", validBodyRequest(productSchemaValid));
 productRouter.post("/", ProductModel.postProduct);
 // Sửa sản phẩm
 productRouter.put("/:id", ProductModel.updateProduct);
+//update status sản phẩm
+productRouter.patch("/:id", ProductModel.updateStatusProduct);
 // Xóa cứng sản phẩm
 productRouter.delete("/:id", ProductModel.removeProductById);
 // Xóa mềm sản phẩm
