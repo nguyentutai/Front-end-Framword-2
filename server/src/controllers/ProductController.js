@@ -4,7 +4,7 @@ import productSchema from "../models/productSchema.js";
 class ProductController {
   async getAllProduct(req, res) {
     try {
-      const data = await productSchema.find({}).populate("categoryId");
+      const data = await productSchema.find({}).populate("categoryId").sort({createdAt: -1})
       if (data) {
         return res.status(201).send({
           message: "GetAll Products Successfully",
@@ -95,6 +95,22 @@ class ProductController {
         return res
           .status(400)
           .send({ status: false, message: "Update Product False" });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
+  async updateStatusProduct(req,res){
+    try {
+      const {status}=req.body
+      const data=await productSchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      if (data) {
+        return res.status(200).send({
+          status: true,
+          message: "Update status successfully",
+          data,
+        });
       }
     } catch (error) {
       return res.status(400).send(error.message);
