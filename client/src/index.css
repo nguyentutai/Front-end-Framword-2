@@ -8,7 +8,7 @@
   }
 }
 .container-main {
-  @apply container mx-auto px-4;
+  @apply container mx-auto;
 }
 
 .bgr-dark {
@@ -19,6 +19,21 @@
 }
 .btn:hover {
   @apply outline outline-white shadow-md bg-transparent text-white;
+}
+.link {
+  @apply leading-[40px] bg-transparent rounded-full inline-block font-bold text-sm px-6 transition ease-in-out bg-primary text-util;
+}
+.link:hover {
+  @apply outline outline-2 outline-primary/50 shadow-md bg-transparent text-primary transition-all;
+}
+.tab-border-bottom::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -15px;
+  background-color: #1b95f2;
+  display: block;
 }
 .active {
   background-color: #1b95f2;

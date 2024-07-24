@@ -22,6 +22,7 @@ const Banner = () => {
     infinite: true,
     autoplay: true,
     speed: 500,
+    arrows: false,
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
@@ -51,16 +52,12 @@ const Banner = () => {
   ];
 
   return (
-    <div className="my-4 relative w-full container-main rounded-lg md:overflow-hidden">
-      <Slider
-        {...settings}
-        ref={sliderRef}
-        className={`w-full`}
-      >
+    <div className="py-4 relative w-full container-main rounded-lg md:overflow-hidden">
+      <Slider {...settings} ref={sliderRef} className={`w-full`}>
         {BannerArray.map((item, index) => (
           <div
             key={index}
-            className={`relative w-full min-h-[450px] max-h-none lg:max-h-[450px] bg-[url('${item.bannerUrl}')] object-cover`}
+            className={`relative w-full min-h-[450px] max-h-none lg:max-h-[450px] bg-[url('https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1.jpg')] object-cover`}
           >
             <div className="flex flex-col lg:flex-row gap-0 lg:gap-16 justify-between w-full p-5 lg:p-10 items-center">
               <div className="space-y-5">
