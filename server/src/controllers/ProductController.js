@@ -21,17 +21,11 @@ class ProductController {
       const data = await productSchema
         .findById(req.params.id)
         .populate("categoryId")
-        .populate({
-          path: "commentId",
-          options: { default: [] },
-        });
+        .populate("commentId");
       if (data) {
         return res.status(201).send({
           message: "GetProductById Successfully",
-          data: {
-            ...data,
-            commentId: data.commentId || [],
-          },
+          data,
         });
       }
     } catch (error) {
@@ -41,6 +35,12 @@ class ProductController {
 
   async postProduct(req, res) {
     try {
+      const checkSlug = await productSchema.findOne({ slug: req.body.slug });
+      if (checkSlug) {
+        return res.status(400).send({
+          message: "Slug is infected",
+        });
+      }
       // Thêm sản phẩm
       const data = await productSchema.create(req.body);
       
