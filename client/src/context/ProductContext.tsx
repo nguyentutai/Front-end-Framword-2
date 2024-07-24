@@ -14,7 +14,7 @@ export const ProductContext = createContext(
 );
 
 const ProductProvider = (props: Props) => {
-  const [products,dispatch]=useReducer(ProductsReducer,[] as IProduct[])
+  const [products, dispatch]=useReducer(ProductsReducer,[] as IProduct[])
   return (
     <ProductContext.Provider value={{ products, dispatch }}>
       {props.children}

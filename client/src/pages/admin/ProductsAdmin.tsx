@@ -1,6 +1,6 @@
 import { FileInput, Label, ToggleSwitch, Select } from "flowbite-react";
 import { Modal } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IProduct } from "../../interfaces/IProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,23 +12,41 @@ import { ICategory } from "../../interfaces/ICategory";
 import _ from "lodash";
 import axios from "axios";
 import LoadingOverlay from "react-loading-overlay-ts";
-import HashLoader from "react-spinners/HashLoader";
+import { ProductContext } from "../../context/ProductContext";
+import swal from "sweetalert";
+
 const ProductsAdmin = () => {
   const [openModal, setOpenModal] = useState(false);
   const [statusProduct, setStatus] = useState(true);
   const [categorys, setCategorys] = useState<ICategory[]>([]);
   const [files, setFiles] = useState<string[]>([]);
   const [isActive, setActive] = useState(false);
+  const { products, dispatch } = useContext(ProductContext);
+  const [AddOrUpdate,setAddOrUpdate]=useState<string>("ADD")
+  const [vauleSearch,setValueSearch]=useState<string>('')
+  //list data products
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await instance.get("products");
+        dispatch({
+          type: "LIST",
+          payload: data.data,
+        });
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    })();
+  }, []);
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
     reset,
   } = useForm<IProduct>({
     resolver: zodResolver(ProductSchemaValid),
   });
-
   const handleUploadImageProduct = async (e: any) => {
     try {
       const fileForms = e.target.files;
@@ -42,6 +60,9 @@ const ProductsAdmin = () => {
   };
   const onSubmit = async (dataForm: IProduct) => {
     try {
+      if (isValid) {
+        setActive(true);
+      }
       const uploadCloud = [...files].map(async (file) => {
         const formData = new FormData();
         formData.append("file", file);
@@ -68,17 +89,21 @@ const ProductsAdmin = () => {
         status: statusProduct,
         categoryId,
       });
-      data &&
-      setActive(false);
+      if (data) {
+        setActive(false);
+      }
       reset();
       setStatus(true);
       setOpenModal(false);
-      toast.success("Thêm sản phẩm thành công!")
+      dispatch({
+        type:"ADD",
+        payload:data.data
+      })
+      toast.success("Thêm sản phẩm thành công!");
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
-  
   useEffect(() => {
     (async () => {
       try {
@@ -88,12 +113,54 @@ const ProductsAdmin = () => {
         toast.error(error.response.data.message);
       }
     })();
-  },[]);
-
+  }, []);
 
   const handleRemoveImage = (image_name: string) => {
     setFiles([...files].filter((file) => file.name !== image_name));
   };
+
+  const handleRemoveProduct= async (id:string)=>{
+    try {
+      await instance.delete(`products/${id}`)
+      dispatch({
+        type:"DELETE",
+        payload:id
+      })
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
+  const fillDataProduct= async (id:string)=>{
+    try {
+      const {data}=await instance.get(`products/${id}`)
+      console.log(data);
+      reset(data.data)
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
+
+  const handleUpdateStatusProduct= async(id:string,statusProduct:boolean)=>{
+    try {
+      const {data}=await instance.patch(`products/${id}`,{
+        status:statusProduct
+      })
+      console.log(data);
+      dispatch({
+        type:"UPDATE",
+        payload:data.data
+      })
+
+      if (data.data.status) {
+        toast.success("Public");
+      } else {
+        toast.warning("Private");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
+
   return (
     <div className="products-admin">
       <div className="flex items-center justify-between">
@@ -121,9 +188,9 @@ const ProductsAdmin = () => {
           <input
             placeholder="Tìm theo tên: "
             className="border-0 outline-none py-2 w-full text-sm"
-            // onChange={(e) => {
-            //   setvalueSearch(e.target.value);
-            // }}
+            onChange={(e) => {
+              setValueSearch(e.target.value);
+            }}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -151,14 +218,10 @@ const ProductsAdmin = () => {
           {/* {AddOrUpdate === "ADD" ? "Thêm" : "Sửa"} danh mục */}
         </Modal.Header>
         <Modal.Body>
-          <LoadingOverlay
-            active={isActive}
-            spinner={<HashLoader color="#1B95F2" size={50} />}
-            classNamePrefix="_loading_overlay_content"
-          >
+          <LoadingOverlay active={isActive} spinner>
             <div className="px-3 pb-2 ">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="space-y-4 w-full">
+                <div className="space-y-3.5 w-full">
                   <div className="space-y-1.5">
                     <label
                       htmlFor="name-category"
@@ -219,22 +282,6 @@ const ProductsAdmin = () => {
                       </span>
                     </div>
                   </div>
-                  {/* <div className="space-y-1.5">
-                  <label
-                    htmlFor="slug-category"
-                    className="font-medium text-sm"
-                  >
-                    Slug
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Slug:"
-                    className="block border border-[#d9d9d9] text-sm rounded-md bg-gray-200 h-10 hover:cursor-not-allowed w-full"
-                    disabled
-                    {...register("slug")}
-                    defaultValue={slugify(slugProduct)}
-                  />
-                </div> */}
                   <div className="space-y-1.5">
                     <div className="mb-2 block">
                       <Label htmlFor="categorys" value="Chọn danh mục" />
@@ -378,7 +425,115 @@ const ProductsAdmin = () => {
           </LoadingOverlay>
         </Modal.Body>
       </Modal>
-
+      <div className="mt-10">
+        <table className="table w-full">
+          <thead>
+            <tr className="*:border h-14">
+              <th>STT</th>
+              <th>Tên sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Giá</th>
+              <th>Ảnh sản phẩm</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.filter((item)=>{
+              return item.name.toLowerCase().includes(vauleSearch.toLowerCase())
+            })
+            .map((product, index) => {
+              return (
+                <tr key={product._id} className="text-center *:border h-12 text-sm">
+                  <td>{index + 1}</td>
+                  <td>{product.name}</td>
+                  <td>{product.categoryId?.name}</td>
+                  <td>{product.price.toLocaleString()}</td>
+                  <td>
+                    <div className="max-w-[50px] h-[50px] w-fit mx-auto rounded-full overflow-hidden shadow p-2 my-2">
+                      <img
+                        src={product.images[0]}
+                        className="w-full object-cover"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <ToggleSwitch
+                      checked={product.status}
+                      className="mx-auto"
+                      onChange={()=>{
+                        setStatus(!product.status)
+                        handleUpdateStatusProduct(product._id!,!product.status)
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <div className="flex justify-center gap-2">
+                      <button
+                        className="bg-util shadow py-1.5 px-3 rounded-md"
+                        onClick={() => {
+                          swal({
+                            title: "Bạn có muốn xóa sản phẩm này ?",
+                            text: "Sau khi xóa sẽ không thể không phục !",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                          }).then((willDelete) => {
+                            if (willDelete) {
+                              handleRemoveProduct(product._id!);
+                              swal("Xóa sản phẩm thành công !", {
+                                icon: "success",
+                              });
+                            }
+                          });
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="red"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        className="bg-util shadow py-1.5 px-3 rounded-md"
+                        onClick={() => {
+                          setOpenModal(true);
+                          setAddOrUpdate("UPDATE");
+                          fillDataProduct(product._id!)
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#1B95F2"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
