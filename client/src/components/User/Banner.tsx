@@ -36,36 +36,38 @@ const Banner = () => {
       bannerUrl:
         "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_2.jpg",
       image:
-        "https://res.cloudinary.com/drz5kdrm5/image/upload/v1721756960/hard_image_2-600x600-removebg-preview_pmzgte.png",
+        "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_2_image.png",
     },
     {
       id: 2,
-      title: "Game Console Nintendo Switch",
+      title: "Playstation 5 Console Disc Version",
       content:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit ut saepe adipisci",
       bannerUrl:
         "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1.jpg",
       image:
-        "https://res.cloudinary.com/drz5kdrm5/image/upload/v1721757042/hard_image_15-removebg-preview_odlua3.png",
+        "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1_image.png",
     },
   ];
 
   return (
-    <div className="mt-2 relative w-full">
-      {/* <img
-        className="w-full"
-        src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1.jpg"
-        alt=""
-      /> */}
-      <Slider {...settings} ref={sliderRef} className="w-full">
+    <div className="my-4 relative w-full container-main rounded-lg md:overflow-hidden">
+      <Slider
+        {...settings}
+        ref={sliderRef}
+        className={`w-full`}
+      >
         {BannerArray.map((item, index) => (
-          <div key={index} className="relative">
-            <div className="w-full">
-              <img className="w-full" src={item.bannerUrl} alt="" />
-            </div>
-            <div className="absolute top-[20%] left-[50%] translate-x-[-50%] flex gap-16">
-              <div>
-                <h3 className="text-[40px] text-white font-bold">
+          <div
+            key={index}
+            className={`relative w-full min-h-[450px] max-h-none lg:max-h-[450px] bg-[url('${item.bannerUrl}')] object-cover`}
+          >
+            <div className="flex flex-col lg:flex-row gap-0 lg:gap-16 justify-between w-full p-5 lg:p-10 items-center">
+              <div className="space-y-5">
+                <div className="bg-black/20 w-fit text-white rounded-full px-4 py-1.5">
+                  <span>Discount Up to 30%</span>
+                </div>
+                <h3 className="text-2xl lg:text-3xl text-white font-bold">
                   {item.title}
                 </h3>
                 <p className="text-white text-md">{item.content}</p>
@@ -73,14 +75,13 @@ const Banner = () => {
                   <Button content="Shop Now" color="bg-white" />
                 </div>
               </div>
-              <div className="-mt-16">
-                <img src={item.image} alt="" />
+              <div className="max-w-[400px] lg:max-w-[500px]">
+                <img src={item.image} className="w-full" alt="" />
               </div>
             </div>
           </div>
         ))}
       </Slider>
-
       <div className="" style={{ textAlign: "center" }}>
         <div
           className="absolute top-[44%] left-[3%] bg-white rounded-full p-1.5 cursor-pointer"
@@ -89,7 +90,7 @@ const Banner = () => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 320 512"
-            className="size-8"
+            className="size-6"
           >
             <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
           </svg>
@@ -101,7 +102,7 @@ const Banner = () => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 320 512"
-            className="size-8"
+            className="size-6"
           >
             <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
           </svg>
