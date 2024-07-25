@@ -1,3 +1,5 @@
+import { ICategory } from "./ICategory";
+
 export interface IProduct{
     _id?:string,
     name:string,
@@ -6,5 +8,5 @@ export interface IProduct{
     price_discount:number,
     images:string[],
     status:boolean,
-    categoryId:string
+    categoryId:ICategory
 }
