@@ -6,11 +6,11 @@ export default function BlogPage() {
       <main className="flex mt-5">
         <div className="container w-4/5 m-auto flex">
           {/* Phần nội dung chính */}
-          <div className="main-content flex-2.5 mr-5">
+          <div className="main-content flex-[2.5] mr-5">
             <h3 className="text-lg font-semibold">News</h3>
             <div className="news space-y-5">
               {/* Bài viết 1 */}
-              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg">
+              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg shadow-lg">
                 <img
                   src="images/shark.jpg"
                   alt="Great White Shark"
@@ -36,7 +36,7 @@ export default function BlogPage() {
                 </div>
               </article>
               {/* Bài viết 2 */}
-              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg">
+              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg shadow-lg">
                 <img
                   src="images/game1.jpg"
                   alt="Game Image"
@@ -62,7 +62,7 @@ export default function BlogPage() {
                 </div>
               </article>
               {/* Bài viết 3 */}
-              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg">
+              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg shadow-lg">
                 <img
                   src="images/game2.jpg"
                   alt="Game Image"
@@ -88,7 +88,7 @@ export default function BlogPage() {
                 </div>
               </article>
               {/* Bài viết 4 */}
-              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg">
+              <article className="flex mb-5 bg-[#fff] p-5 rounded-lg shadow-lg">
                 <img
                   src="images/game3.jpg"
                   alt="Game Image"
@@ -118,7 +118,7 @@ export default function BlogPage() {
           </div>
 
           {/* Các phần bên */}
-          <aside className="flex-1.5 space-y-5">
+          <aside className="flex-[1.5] space-y-5">
             <h3 className="text-lg font-semibold">Recent Posts</h3>
             <div className="recent-posts p-5 mb-5 rounded-lg bg-white shadow-lg">
               <ul className="p-0 list-none">
