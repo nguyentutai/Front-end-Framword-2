@@ -1,6 +1,6 @@
 import { z } from "zod"
 const ProductSchemaValid =z.object({
-    name:z.string().min(6,"Tên danh mục tối thiểu 6 kí tự"),
+    name:z.string().min(3,"Tên danh mục tối thiểu 3 kí tự"),
     price:z.number({
       invalid_type_error:"Giá phải là số !",
       required_error:"Giá là bắt buộc !"

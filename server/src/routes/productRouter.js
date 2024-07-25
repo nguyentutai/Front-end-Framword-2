@@ -11,14 +11,14 @@ productRouter.get("/pagination", ProductModel.pageProduct);
 productRouter.get("/", ProductModel.getAllProduct);
 // Lấy sản phẩm theo id
 productRouter.get("/:id", ProductModel.getProductById);
+//update status sản phẩm
+productRouter.patch("/:id", ProductModel.updateStatusProduct);
 // Validate
-productRouter.use("/", validBodyRequest(productSchemaValid));
+// productRouter.use("/", validBodyRequest(productSchemaValid));
 // Thêm sản phẩm
 productRouter.post("/", ProductModel.postProduct);
 // Sửa sản phẩm
 productRouter.put("/:id", ProductModel.updateProduct);
-//update status sản phẩm
-productRouter.patch("/:id", ProductModel.updateStatusProduct);
 // Xóa cứng sản phẩm
 productRouter.delete("/:id", ProductModel.removeProductById);
 // Xóa mềm sản phẩm

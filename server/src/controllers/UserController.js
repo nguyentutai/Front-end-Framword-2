@@ -14,7 +14,7 @@ class UserController {
       return res.status(400).send(error.message);
     }
   }
-
+  
   async getUserById(req, res) {
     try {
       const data = await productSchema
