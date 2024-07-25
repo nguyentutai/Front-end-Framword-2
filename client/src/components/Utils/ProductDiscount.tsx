@@ -2,7 +2,7 @@ import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
 const ProductDiscount = () => {
   return (
-    <div className="rounded-2xl bg-white shadow-lg flex p-4 gap-5 relative m-2">
+    <div className="rounded-2xl bg-white shadow-lg flex p-4 gap-3 relative m-2">
       <div className="max-w-[200px] relative">
         <img
           src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_2-600x600.jpg"
@@ -28,13 +28,13 @@ const ProductDiscount = () => {
           <p className="font-bold text-base">$199.00</p>
           <p className="line-through text-sm">$199.00</p>
         </div>
-        <div className="flex gap-4 pt-4">
+        <div className="flex gap-2 pt-4">
           <button className="bg-primary rounded-2xl py-2 px-3 text-xs text-white opacity-70 font-medium hover:opacity-100">
             Add to Card
           </button>
           <Link
             to={""}
-            className="bg-red-600 rounded-2xl py-2 px-3 text-xs text-white opacity-70 font-medium hover:opacity-100"
+            className="bg-red-600 rounded-2xl  py-2 px-2 text-xs text-white opacity-70 font-medium hover:opacity-100"
           >
             Show Detail
           </Link>

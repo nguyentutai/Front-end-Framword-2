@@ -18,12 +18,24 @@ import BlogsAdmin from "./pages/admin/BlogsAdmin.tsx";
 import BlogProvider from "./context/BlogContext.tsx";
 import UpdateBlogAdmin from "./pages/admin/UpdateBlogAdmin.tsx";
 import BlogPage from "./components/User/BlogPage.tsx";
+import DetailProduct from "./components/User/DetailProduct.tsx";
+import ProductList from "./components/User/ProductListPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <CategorysProvider>
         <ProductProvider>
+          <Routes>
+            <Route path="" element={<App />}>
+              {/* User */}
+              <Route element={<LayoutUser />}>
+                <Route index element={<HomePage />} />
+                <Route path="/blogs" element={<BlogPage />} />
+                <Route path="/detail" element={<DetailProduct />} />
+                <Route path="/products" element={<ProductList />} />
+                <Route path="register" element={<Register />} />
+                <Route path="login" element={<Login />} />
           <BlogProvider>
             <Routes>
               <Route path="" element={<App />}>

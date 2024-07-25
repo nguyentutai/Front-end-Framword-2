@@ -229,7 +229,7 @@ const HomePage = () => {
           <ViewAll color="text-primary" content="View All" />
         </div>
       </section>
-      <section className="container-main">
+      <section className="container-main pb-10">
         <div className="w-full border-b-[3px] py-3">
           <h3 className="text-2xl font-bold w-fit tab-border-bottom relative dark:text-white">
             Recent Blog
