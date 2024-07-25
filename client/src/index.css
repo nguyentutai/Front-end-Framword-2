@@ -7,6 +7,7 @@
     font-family: "Roboto", sans-serif;
   }
 }
+
 .container-main {
   @apply container mx-auto px-4;
 }
@@ -36,4 +37,7 @@
 ::-webkit-scrollbar-thumb {
   background-color: #1b95f2;
   border-radius: 50px;
+}
+.jodit-wysiwyg{
+  min-height: 350px !important;
 }

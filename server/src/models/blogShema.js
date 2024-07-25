@@ -6,6 +6,11 @@ const BlogModel = new mongoose.Schema(
       type: String,
       required: true,
     },
+    slug:{
+      type: String,
+      unique: true,
+      required: true,
+    },
     userId: {
       type: mongoose.Types.ObjectId,
       ref: "users",
@@ -13,7 +18,7 @@ const BlogModel = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {
