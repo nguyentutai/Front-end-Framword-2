@@ -9,10 +9,12 @@ import {
   MenuItem,
   MenuList,
 } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const HeaderAdmin = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [location,setLocation]=useState<string>()
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -20,7 +22,11 @@ const HeaderAdmin = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const url=useLocation()
+  useEffect(() => {
+    setLocation(url.pathname.split("/admin")[1])
+  }, [url])
+  document.title=`GAME MART | ${location== "" ? "Dashboard" : location?.charAt(1).toUpperCase()}${location?.slice(2)}`
   return (
     <>
       <header className="shadow py-2 sticky top-0 z-50 bg-util backdrop-blur" id="header-page-admin">
@@ -44,10 +50,10 @@ const HeaderAdmin = () => {
                     d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                   />
                 </svg>
-                /<span className="text-sm">Dashboard</span>
+                <span className="text-sm">{location=="" ? "/ Dashboard" : `/ ${location?.charAt(1).toUpperCase()}${location?.slice(2)}`}</span>
               </div>
               <div className="mt-1.5">
-                <h2 className="font-medium">Dashboard</h2>
+                <h2 className="font-medium">{location=="" ? "Dashboard" : `${location?.charAt(1).toUpperCase()}${location?.slice(2)}`}</h2>
               </div>
             </div>
           </nav>

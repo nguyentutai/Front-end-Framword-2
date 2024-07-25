@@ -2,13 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
-  *{
+@layer base {
+  * {
     font-family: "Roboto", sans-serif;
   }
 }
+.container-main {
+  @apply container mx-auto;
+}
 
-.active{
-  background-color: #1B95F2;
+.bgr-dark {
+  @apply bg-[#1C2329];
+}
+.btn {
+  @apply leading-[40px] bg-white rounded-full inline-block font-bold text-sm px-6 transition ease-in-out duration-300;
+}
+.btn:hover {
+  @apply outline outline-white shadow-md bg-transparent text-white;
+}
+.link {
+  @apply leading-[40px] bg-transparent rounded-full inline-block font-bold text-sm px-6 transition ease-in-out bg-primary text-util;
+}
+.link:hover {
+  @apply outline outline-2 outline-primary/50 shadow-md bg-transparent text-primary transition-all;
+}
+.tab-border-bottom::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -15px;
+  background-color: #1b95f2;
+  display: block;
+}
+.active {
+  background-color: #1b95f2;
   color: white;
+}
+.focus\:ring-cyan-300:focus {
+  --tw-ring-opacity: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1b95f2;
+  border-radius: 50px;
 }

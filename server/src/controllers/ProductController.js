@@ -4,7 +4,7 @@ import productSchema from "../models/productSchema.js";
 class ProductController {
   async getAllProduct(req, res) {
     try {
-      const data = await productSchema.find({}).populate("categoryId");
+      const data = await productSchema.find({}).populate("categoryId").sort({createdAt: -1})
       if (data) {
         return res.status(201).send({
           message: "GetAll Products Successfully",
@@ -21,17 +21,11 @@ class ProductController {
       const data = await productSchema
         .findById(req.params.id)
         .populate("categoryId")
-        .populate({
-          path: "commentId",
-          options: { default: [] },
-        });
+        .populate("commentId");
       if (data) {
         return res.status(201).send({
           message: "GetProductById Successfully",
-          data: {
-            ...data,
-            commentId: data.commentId || [],
-          },
+          data,
         });
       }
     } catch (error) {
@@ -41,8 +35,15 @@ class ProductController {
 
   async postProduct(req, res) {
     try {
+      const checkSlug = await productSchema.findOne({ slug: req.body.slug });
+      if (checkSlug) {
+        return res.status(400).send({
+          message: "Slug is infected",
+        });
+      }
       // Thêm sản phẩm
       const data = await productSchema.create(req.body);
+      
       // lấy ra id sản phẩm thêm vào bảng category
       const catgoryId = await categorySchema.findByIdAndUpdate(
         data.categoryId,
@@ -94,6 +95,22 @@ class ProductController {
         return res
           .status(400)
           .send({ status: false, message: "Update Product False" });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
+  async updateStatusProduct(req,res){
+    try {
+      const {status}=req.body
+      const data=await productSchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      if (data) {
+        return res.status(200).send({
+          status: true,
+          message: "Update status successfully",
+          data,
+        });
       }
     } catch (error) {
       return res.status(400).send(error.message);

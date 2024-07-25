@@ -12,27 +12,32 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AuthForm from "./pages/user/AuthForm.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
+import ProductProvider from "./context/ProductContext.tsx";
+import HomePage from "./components/User/HomePage.tsx";
+import BlogPage from "./components/User/BlogPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-    <CategorysProvider>
-      <AuthProvider>
-      <Routes>
-        <Route path="" element={<App />}>
-          {/* User */}
-          <Route element={<LayoutUser />}>
-            <Route path="/register" element={<AuthForm />} />
-            <Route path="/login" element={<AuthForm isLogin />} />
-          </Route>
-          {/* Admin */}
-          <Route path="admin" element={<LayoutAdmin />}>
-            <Route path="categorys" element={<CategorysAdmin />} />
-            <Route path="products" element={<ProductsAdmin />} />
-          </Route>
-        </Route>
-      </Routes>
-      </AuthProvider>
+      <CategorysProvider>
+        <ProductProvider>
+          <Routes>
+            <Route path="" element={<App />}>
+              {/* User */}
+              <Route element={<LayoutUser />}>
+                <Route index element={<HomePage />} />
+                <Route path="/blogs" element={<BlogPage />} />
+                <Route path="register" element={<Register />} />
+                <Route path="login" element={<Login />} />
+              </Route>
+              {/* Admin */}
+              <Route path="admin" element={<LayoutAdmin />}>
+                <Route path="categorys" element={<CategorysAdmin />} />
+                <Route path="products" element={<ProductsAdmin />} />
+              </Route>
+            </Route>
+          </Routes>
+        </ProductProvider>
       </CategorysProvider>
       <ToastContainer autoClose={3000} newestOnTop />
     </BrowserRouter>
