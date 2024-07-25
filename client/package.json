@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mui/lab": "^5.0.0-alpha.172",
     "@mui/material": "^5.16.4",
+    "antd": "^5.19.3",
     "axios": "^1.7.2",
     "flowbite-react": "^0.10.1",
     "html-react-parser": "^5.1.12",

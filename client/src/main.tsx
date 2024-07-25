@@ -4,19 +4,20 @@ import App from "./App.tsx";
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutAdmin from "./pages/admin/LayoutAdmin.tsx";
-import Register from "./pages/user/Register.tsx";
 import LayoutUser from "./pages/user/LayoutUser.tsx";
-import Login from "./pages/user/Login.tsx";
 import CategorysAdmin from "./pages/admin/CategorysAdmin.tsx";
 import ProductsAdmin from "./pages/admin/ProductsAdmin.tsx";
 import CategorysProvider from "./context/CategoryContext.tsx";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
+import AuthForm from "./pages/user/AuthForm.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 import ProductProvider from "./context/ProductContext.tsx";
 import HomePage from "./components/User/HomePage.tsx";
 import BlogsAdmin from "./pages/admin/BlogsAdmin.tsx";
 import BlogProvider from "./context/BlogContext.tsx";
 import UpdateBlogAdmin from "./pages/admin/UpdateBlogAdmin.tsx";
+import BlogPage from "./components/User/BlogPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 {/* User */}
                 <Route element={<LayoutUser />}>
                   <Route index element={<HomePage />} />
+                  <Route path="blogs" element={<BlogPage />} />
                   <Route path="register" element={<Register />} />
                   <Route path="login" element={<Login />} />
                 </Route>

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
@@ -16,7 +17,7 @@ const Header = () => {
     }
   }, [darkMode]);
   return (
-    <div>
+    <>
       <div className="bg-[#1C2329] py-3 lg:block hidden">
         <section className="container-main flex justify-between items-center">
           <div>
@@ -72,14 +73,20 @@ const Header = () => {
           </div>
         </section>
       </div>
-      <div className="dark:bg-black">
-        <Navbar className="!block container-main dark:bg-black">
+      <header className="dark:bg-black bg-util sticky top-0 z-50">
+        <Navbar className="!block container-main dark:bg-black !p-0">
           <div className="w-full dark:bg-black">
             <section className="dark:bg-black flex justify-between gap-10 py-7">
+              <Navbar.Toggle />
               <Link to={""}>
                 <img
-                  className="max-w-[240px] text-black dark:text-white"
+                  className="max-w-[240px] text-black dark:text-white hidden lg:block"
                   src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/logo_homepage_3.png"
+                  alt=""
+                />
+                <img
+                  className="block lg:hidden"
+                  src="../../../public/images/favicon.ico"
                   alt=""
                 />
               </Link>
@@ -118,7 +125,7 @@ const Header = () => {
                       d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"
                     />
                   </svg>
-                  <p className="dark:text-white">Wishlist</p>
+                  <p className="dark:text-white ">Wishlist</p>
                   <p className="absolute top-1 -left-2 bg-red-600 rounded-full w-4 h-4 text-center text-white text-xs leading-4">
                     0
                   </p>
@@ -137,7 +144,7 @@ const Header = () => {
                       d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"
                     />
                   </svg>
-                  <p>My Cart</p>
+                  <p className="lg:block hidden">My Cart</p>
                   <p className="absolute top-1 -left-2 bg-red-600 rounded-full w-4 h-4 text-center text-white text-xs leading-4">
                     0
                   </p>
@@ -156,12 +163,11 @@ const Header = () => {
                       d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"
                     />
                   </svg>
-                  <p>Login / Register</p>
+                  <p className="lg:block hidden">Login / Register</p>
                 </Link>
-                <Navbar.Toggle />
               </div>
             </section>
-            <section className="container-main flex items-center">
+            <section className="container-main flex items-center bg-white dark:bg-black">
               {/* Categorys list */}
               <div className="flex items-center">
                 <nav className="hidden space-x-10 md:flex">
@@ -169,7 +175,7 @@ const Header = () => {
                     <button
                       onClick={toggleDropdown}
                       type="button"
-                      className="group p-4 inline-flex items-center justify-between bg-gray-200 rounded-md text-base font-medium hover:text-gray-900 hover:bg-blue-600 duration-300 w-[300px]"
+                      className="group p-4 inline-flex items-center justify-between bg-gray-200 rounded-md text-base font-medium hover:text-gray-900 hover:bg-primary duration-300 w-[300px]"
                       aria-expanded={isOpen}
                     >
                       <div className="flex gap-3">
@@ -200,7 +206,7 @@ const Header = () => {
                     </button>
                     {isOpen && (
                       <div
-                        className="absolute z-full mt-3 min-w-[300px] transform px-2 sm:px-0 z-50 rounded-sm bg-white"
+                        className="absolute z-full mt-3 min-w-[300px] transform sm:px-0 z-50 rounded-sm bg-white"
                         style={{
                           transition:
                             "opacity 0.2s ease-out, transform 0.2s ease-out",
@@ -235,21 +241,21 @@ const Header = () => {
               <nav className="w-full lg:ms-10">
                 <Navbar.Collapse className="*:text-2xl *:cursor-pointer">
                   <Navbar.Link
-                    className="ms-3 !hover:text-red-600 text-lg"
+                    className="ms-3 !hover:text-red-600 text-base"
                     to={""}
                   >
                     HomePage
                   </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-lg" to={""}>
+                  <Navbar.Link className="ms-3 text-base" to={""}>
                     Shop
                   </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-lg" to={""}>
+                  <Navbar.Link className="ms-3 text-base" to={""}>
                     News
                   </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-lg" to={""}>
+                  <Navbar.Link className="ms-3 text-base" to={""}>
                     Pages
                   </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-lg" to={""}>
+                  <Navbar.Link className="ms-3 text-base" to={""}>
                     Contact Us
                   </Navbar.Link>
                 </Navbar.Collapse>
@@ -257,8 +263,8 @@ const Header = () => {
             </section>
           </div>
         </Navbar>
-      </div>
-    </div>
+      </header>
+    </>
   );
 };
 
