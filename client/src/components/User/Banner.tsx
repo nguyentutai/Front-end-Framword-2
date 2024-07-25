@@ -81,7 +81,7 @@ const Banner = () => {
       </Slider>
       <div className="" style={{ textAlign: "center" }}>
         <div
-          className="absolute top-[44%] left-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] left-8%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={previous}
         >
           <svg
@@ -93,7 +93,7 @@ const Banner = () => {
           </svg>
         </div>
         <div
-          className="absolute top-[44%] right-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] right-[5.5%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={next}
         >
           <svg

@@ -15,6 +15,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ProductProvider from "./context/ProductContext.tsx";
 import HomePage from "./components/User/HomePage.tsx";
 import BlogPage from "./components/User/BlogPage.tsx";
+import DetailProduct from "./components/User/DetailProduct.tsx";
+import ProductList from "./components/User/ProductListPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -27,6 +29,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route element={<LayoutUser />}>
                 <Route index element={<HomePage />} />
                 <Route path="/blogs" element={<BlogPage />} />
+                <Route path="/detail" element={<DetailProduct />} />
+                <Route path="/products" element={<ProductList />} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
               </Route>

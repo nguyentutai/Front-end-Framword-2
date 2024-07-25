@@ -1,8 +1,8 @@
 import { Rating } from "@mui/material";
 
-export default function ProductList() {
+export default function ProductList1() {
   return (
-    <div className="text-center relative overflow-hidden group shadow-pro rounded-xl py-5">
+    <div className="text-center relative overflow-hidden group shadow-catelist rounded-xl py-5">
       <div className="max-w-[200px] relative mx-auto rounded-xl overflow-hidden">
         <img
           src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_2-600x600.jpg"
@@ -14,6 +14,9 @@ export default function ProductList() {
           alt="Second"
           className="w-full h-full object-cover transition-opacity duration-700 opacity-0 hover:opacity-100 absolute top-0 left-0"
         />
+      </div>
+      <div>
+        <span className="text-xs text-black/50">Games</span>
       </div>
       <div>
         <h3 className="py-2 text-base dark:text-util">
