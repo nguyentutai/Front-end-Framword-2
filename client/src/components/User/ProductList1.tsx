@@ -1,27 +1,35 @@
 import { Rating } from "@mui/material";
+import { IProduct } from "../../interfaces/IProduct";
 
-export default function ProductList() {
+export default function ProductList1({ product }: { product: IProduct }) {
   return (
-    <div className="text-center relative overflow-hidden group shadow-pro rounded-xl py-5">
-      <div className="max-w-[200px] relative mx-auto rounded-xl overflow-hidden">
+    <div className="text-center relative overflow-hidden group shadow-catelist rounded-xl py-5 dark:bg-util">
+      <div className="max-w-[200px] relative mx-auto rounded-xl overflow-hidden ">
         <img
-          src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_2-600x600.jpg"
+          src={product.images[0]}
           alt="First"
           className="w-full h-full object-cover  transition-opacity duration-300 hover:opacity-0"
         />
         <img
-          src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_14.jpg"
+          src={product.images[1]}
           alt="Second"
           className="w-full h-full object-cover transition-opacity duration-700 opacity-0 hover:opacity-100 absolute top-0 left-0"
         />
       </div>
       <div>
-        <h3 className="py-2 text-base dark:text-util">
-          Playstation 5 Drive Editoin
+        <span className="text-xs text-black/50 ">
+          {product.categoryId.name}
+        </span>
+      </div>
+      <div>
+        <h3 className="py-2 text-base dark:text-black px-4 overflow-hidden text-ellipsis whitespace-nowrap">
+          {product.name}
         </h3>
       </div>
       <div className="pb-2">
-        <span className="text-base font-bold dark:text-util">$550.00</span>
+        <span className="text-base font-bold dark:text-black">
+          ${product.price.toFixed(1)}
+        </span>
       </div>
       <div>
         <Rating
@@ -31,14 +39,14 @@ export default function ProductList() {
         />
       </div>
       <div className="absolute top-8 right-0 space-y-3 translate-x-12 group-hover:-translate-x-4 duration-500">
-        <div className="bg-primary rounded-full text-util p-2.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
+        <div className="bg-primary rounded-full text-util p-1.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6"
+            className="size-5"
           >
             <path
               strokeLinecap="round"
@@ -47,14 +55,14 @@ export default function ProductList() {
             />
           </svg>
         </div>
-        <div className="bg-primary rounded-full text-util p-2.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
+        <div className="bg-primary rounded-full text-util p-1.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6"
+            className="size-5"
           >
             <path
               strokeLinecap="round"
@@ -63,14 +71,14 @@ export default function ProductList() {
             />
           </svg>
         </div>
-        <div className="bg-primary rounded-full text-util p-2.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
+        <div className="bg-primary rounded-full text-util p-1.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6"
+            className="size-5"
           >
             <path
               strokeLinecap="round"

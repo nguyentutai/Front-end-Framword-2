@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import { useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Button from "../Utils/Button";
+import Button from "./Button";
 
 const Banner = () => {
   const sliderRef = useRef<Slider>(null);
@@ -12,7 +12,6 @@ const Banner = () => {
     }
   };
   const previous = () => {
-    console.log("1");
     if (sliderRef.current) {
       sliderRef.current.slickPrev();
     }
@@ -81,7 +80,7 @@ const Banner = () => {
       </Slider>
       <div className="" style={{ textAlign: "center" }}>
         <div
-          className="absolute top-[44%] left-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] left-8%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={previous}
         >
           <svg
@@ -93,7 +92,7 @@ const Banner = () => {
           </svg>
         </div>
         <div
-          className="absolute top-[44%] right-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] right-[5.5%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={next}
         >
           <svg

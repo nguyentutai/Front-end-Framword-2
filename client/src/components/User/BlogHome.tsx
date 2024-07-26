@@ -21,7 +21,7 @@ export default function BlogHome() {
         <div>
           <Link
             to={""}
-            className="font-bold text-xl hover:text-primary duration-500 cursor-pointer"
+            className="font-bold text-base hover:text-primary dark:text-util duration-500 cursor-pointer"
           >
             Great White Shark Nursery Found in Waters Off Montauk
           </Link>
@@ -33,7 +33,7 @@ export default function BlogHome() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6"
+            className="size-5 dark:text-util"
           >
             <path
               strokeLinecap="round"
@@ -41,11 +41,11 @@ export default function BlogHome() {
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
             />
           </svg>
-          <span className="text-primary/70 font-bold text-sm">
+          <span className="text-primary/70 font-bold text-xs">
             By Admin / February 15, 2024
           </span>
         </div>
-        <span className="text-sm text-black/80">
+        <span className="text-xs text-black/80 dark:text-util">
           Lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem
           massa mattis sem, at interdum magna augue eget diam. Vestibulum
         </span>
