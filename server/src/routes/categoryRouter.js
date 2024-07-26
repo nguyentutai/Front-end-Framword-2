@@ -9,7 +9,9 @@ const CategoryModel = new CategoryController();
 // Lấy tất cả danh mục
 categoryRouter.get("/", CategoryModel.getAllCategorys);
 // Lấy danh mục theo id
-categoryRouter.get("/:id", CategoryModel.getCategoryById);
+// categoryRouter.get("/:id", CategoryModel.getCategoryById);
+// Lấy danh mục theo slug
+categoryRouter.get("/:slug", CategoryModel.getCategoryBySlug);
 // Sửa status danh mục
 categoryRouter.patch("/:id", CategoryModel.updateStatusCategory);
 // Xóa cứng danh mục

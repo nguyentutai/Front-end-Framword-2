@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import { useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Button from "../Utils/Button";
+import Button from "./Button";
 
 const Banner = () => {
   const sliderRef = useRef<Slider>(null);
@@ -12,7 +12,6 @@ const Banner = () => {
     }
   };
   const previous = () => {
-    console.log("1");
     if (sliderRef.current) {
       sliderRef.current.slickPrev();
     }

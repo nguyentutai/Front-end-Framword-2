@@ -1,17 +1,22 @@
-
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
+import { CategorysContext } from "../../context/CategoryContext";
+import { useAuth } from "../../context/AuthContext";
+import { Button, Drawer } from "flowbite-react";
+
 const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const { categorys } = useContext(CategorysContext);
   const [isOpen, setIsOpen] = useState(false);
-
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const open1 = Boolean(anchorEl);
+  const [isOpens, setIsOpens] = useState(true);
+  const handleCloses = () => setIsOpens(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -29,6 +34,7 @@ const Header = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
+
   return (
     <>
       <div className="bg-[#1C2329] py-1.5 lg:block hidden">
@@ -145,10 +151,7 @@ const Header = () => {
                 </Link>
                 <button
                   id="fade-button"
-                  aria-controls={open ? "fade-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={handleClick}
+                  onClick={() => setIsOpens(true)}
                   className="flex items-center gap-2 relative dark:text-white"
                 >
                   <svg
@@ -259,19 +262,43 @@ const Header = () => {
                     </div>
                   </div>
                 </Menu>
-                <button className="flex items-center gap-2 dark:text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    className="size-5"
+                {user && user ? (
+                  <div
+                    className="flex items-center gap-2"
+                    aria-controls={open ? "fade-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                    onClick={handleClick}
                   >
-                    <path
-                      fill={`${darkMode ? "#ffff" : "#00000"}`}
-                      d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"
-                    />
-                  </svg>
-                  <p className="lg:block hidden text-sm">Login / Register</p>
-                </button>
+                    <div className="max-w-6 rounded-full border p-0.5 dark:bg-util">
+                      <img
+                        src={
+                          user.avatar ||
+                          "https://res.cloudinary.com/drz5kdrm5/image/upload/v1722003900/th-removebg-preview_qy0spz.png"
+                        }
+                        alt=""
+                      />
+                    </div>
+                    <span className="text-sm font-semibold dark:text-util">
+                      {user.username}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 dark:text-white">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="size-5"
+                    >
+                      <path
+                        fill={`${darkMode ? "#ffff" : "#00000"}`}
+                        d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"
+                      />
+                    </svg>
+                    <Link to={"/login"}>Login</Link> /
+                    <Link to={"/register"}>Register</Link>
+                  </div>
+                )}
               </div>
             </section>
             <section className="container-main flex items-center pb-3 bg-white dark:bg-black">
@@ -324,21 +351,20 @@ const Header = () => {
                       >
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                           <div className="relative  *:px-4 *:py-3 *:m-3 *:rounded-md">
-                            <Link className="hover:bg-slate-200 block" to={""}>
-                              Danh mục 1
-                            </Link>
-                            <Link className="hover:bg-slate-200 block" to={""}>
-                              Danh mục 2
-                            </Link>
-                            <Link className="hover:bg-slate-200 block" to={""}>
-                              Danh mục 3
-                            </Link>
-                            <Link className="hover:bg-slate-200 block" to={""}>
-                              Danh mục 4
-                            </Link>
-                            <Link className="hover:bg-slate-200 block" to={""}>
-                              Danh mục 5
-                            </Link>
+                            {categorys &&
+                              categorys.length > 0 &&
+                              categorys.map((cate) => {
+                                if (cate.status == true) {
+                                  return (
+                                    <Link
+                                      className="hover:bg-slate-200 block"
+                                      to={"/category/" + cate.slug}
+                                    >
+                                      {cate.name}
+                                    </Link>
+                                  );
+                                }
+                              })}
                           </div>
                         </div>
                       </div>
@@ -347,30 +373,123 @@ const Header = () => {
                 </nav>
               </div>
               <nav className="w-full lg:ms-10">
-                <Navbar.Collapse className="*:text-2xl *:cursor-pointer">
-                  <Navbar.Link
-                    className="ms-3 !hover:text-red-600 text-base"
-                    to={""}
+                <Navbar.Collapse className="*:text-2xl *:cursor-pointer ">
+                  <Link
+                    className="ms-3 hover:text-red-600 duration-300 text-base"
+                    to={"/"}
                   >
                     HomePage
-                  </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-base" to={""}>
+                  </Link>
+                  <Link
+                    className="ms-3 hover:text-red-600 duration-300 text-base"
+                    to={"/products"}
+                  >
                     Shop
-                  </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-base" to={""}>
+                  </Link>
+                  <Link
+                    className="ms-3 hover:text-red-600 duration-300 text-base"
+                    to={"/news"}
+                  >
                     News
-                  </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-base" to={""}>
+                  </Link>
+                  <Link
+                    className="ms-3 hover:text-red-600 duration-300 text-base"
+                    to={"/blogs"}
+                  >
                     Pages
-                  </Navbar.Link>
-                  <Navbar.Link className="ms-3 text-base" to={""}>
+                  </Link>
+                  <Link
+                    className="ms-3 hover:text-red-600 duration-300 text-base"
+                    to={"/contact"}
+                  >
                     Contact Us
-                  </Navbar.Link>
+                  </Link>
                 </Navbar.Collapse>
               </nav>
             </section>
           </div>
         </Navbar>
+        <Drawer open={isOpens} onClose={handleCloses} position="right">
+          <div className="flex items-center gap-4 bg-slate-300 px-4 py-3 rounded-xl">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+              />
+            </svg>
+            <span className="text-xl">Cart</span>
+          </div>
+          <Drawer.Items>
+            <div className="flex-col gap-4">
+              <div className="flex items-center shadow justify-around gap-6 rounded-lg ">
+                <div className="max-w-[100px]">
+                  <img
+                    className="w-full"
+                    src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15-210x210.jpg"
+                    alt=""
+                  />
+                </div>
+                <div>
+                  <h3 className="text-xs font-semibold pb-3">Sản phẩm 1</h3>
+                  <span className="text-xs font-bold">1 x $199.0</span>
+                </div>
+                <div className="hover:text-red-600 cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="w-full">
+              <Link
+                to={""}
+                className="rounded-lg block border border-gray-200 bg-white px-4 py-2 text-center w-full text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-cyan-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+              >
+                View Cart
+              </Link>
+              <Link
+                to={""}
+                className="inline-flex justify-center mt-3 w-full items-center rounded-lg bg-cyan-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+              >
+                Checking&nbsp;
+                <svg
+                  className="ms-2 h-3.5 w-3.5 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </Link>
+            </div>
+          </Drawer.Items>
+        </Drawer>
       </header>
     </>
   );

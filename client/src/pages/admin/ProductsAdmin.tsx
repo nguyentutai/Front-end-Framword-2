@@ -25,20 +25,7 @@ const ProductsAdmin = () => {
   const { products, dispatch } = useContext(ProductContext);
   const [AddOrUpdate, setAddOrUpdate] = useState<string>("ADD");
   const [valueSearch, setValueSearch] = useState<string>("");
-  //list data products
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await instance.get("products");
-        dispatch({
-          type: "LIST",
-          payload: data.data,
-        });
-      } catch (error) {
-        toast.error(error.response.data.message);
-      }
-    })();
-  }, []);
+  
 
   const {
     register,
@@ -239,12 +226,12 @@ const ProductsAdmin = () => {
                       htmlFor="name-category"
                       className="font-medium text-sm"
                     >
-                      Tên danh mục
+                      Tên sản phẩm
                     </label>
                     <input
                       type="text"
                       className="block border border-[#d9d9d9] rounded-md w-full h-10 text-sm"
-                      placeholder="Tên danh mục: "
+                      placeholder="Tên sản phẩm: "
                       {...register("name")}
                     />
                     <span className="text-sm text-red-400">
@@ -371,7 +358,7 @@ const ProductsAdmin = () => {
                             <div className="flex items-center justify-betweenv w-full gap-2">
                               <div className="max-w-[100px] w-full h-full">
                                 <img
-                                  src={file}
+                                  src={URL.createObjectURL(file as any)}
                                   className="rounded-md inline-block object-cover"
                                 />
                               </div>
