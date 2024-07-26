@@ -22,6 +22,9 @@ import DetailProduct from "./components/User/DetailProduct.tsx";
 import ProductList from "./components/User/ProductListPage.tsx";
 import ScrollToTop from "./utils/ScrollTop.tsx";
 
+import NewsPage from "./components/User/NewsPage.tsx";
+
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -36,6 +39,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route element={<LayoutUser />}>
                     <Route index element={<HomePage />} />
                     <Route path="blogs" element={<BlogPage />} />
+                    <Route path="/news" element={<NewsPage />} />
                     <Route path="detail/:slug" element={<DetailProduct />} />
                     <Route path="products" element={<ProductList />} />
                     <Route path="products/:slug" element={<ProductList />} />
