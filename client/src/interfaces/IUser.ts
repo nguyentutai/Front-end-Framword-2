@@ -1,8 +1,9 @@
 export interface User {
-    id?: string | number;
-    name: string;
-    email: string;
-    password: string;
-    confirmPass: string;
-    role?: "admin" | "member" | "guest";
+  _id?: string | number;
+  username: string;
+  email: string;
+  avatar: string;
+  password: string;
+  confirmPass: string;
+  role?: "admin" | "member";
 }

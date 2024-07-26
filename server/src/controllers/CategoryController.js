@@ -34,6 +34,41 @@ class CategoryController {
     }
   }
 
+  async getCategoryBySlug(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 4;
+      const data = await categorySchema
+        .findOne({ slug: req.params.slug })
+        .populate({
+          path: "productId",
+          options: {
+            skip: (page - 1) * limit,
+            limit: limit,
+          },
+        });
+      const dataCate = await categorySchema.findOne({ slug: req.params.slug });
+      const count = dataCate.productId.length;
+      if (data) {
+        return res.status(201).send({
+          message: "GetCategoryBySlug Successfully",
+          data: {
+            ...data.data,
+            productId: [
+              data.productId,
+              {
+                totalPages: Math.ceil(count / limit), // Làm tròn tổng số trang
+                currentPage: page,
+              },
+            ],
+          },
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
   async postCategory(req, res) {
     try {
       const checkSlug = await categorySchema.findOne({ slug: req.body.slug });

@@ -1,23 +1,24 @@
 import Banner from "./Banner";
 import Slider from "react-slick";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Button from "../Utils/Button";
-import ProductDiscount from "../Utils/ProductDiscount";
-import ProductList from "../Utils/ProductList";
-import ViewAll from "../Utils/ViewAll";
-import BlogHome from "../Utils/BlogHome";
+import Button from "./Button";
+import ProductDiscount from "./ProductDiscount";
+import ProductList from "./ProductList";
+import ViewAll from "./ViewAll";
+import BlogHome from "./BlogHome";
+import { ProductContext } from "../../context/ProductContext";
 
 const HomePage = () => {
   const sliderRef = useRef<Slider>(null);
+  const { products } = useContext(ProductContext);
   const next = () => {
     if (sliderRef.current) {
       sliderRef.current.slickNext();
     }
   };
   const previous = () => {
-    console.log("1");
     if (sliderRef.current) {
       sliderRef.current.slickPrev();
     }
@@ -122,24 +123,17 @@ const HomePage = () => {
           </div>
           <div className="w-full relative pt-10 group">
             <Slider {...settings} ref={sliderRef} className={`w-full`}>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
-              <div className="rounded-xl">
-                <ProductDiscount />
-              </div>
+              {products &&
+                products.length > 0 &&
+                products.map((pro) => {
+                  if (pro.price_discount !== 0) {
+                    return (
+                      <div className="rounded-xl">
+                        <ProductDiscount product={pro} />
+                      </div>
+                    );
+                  }
+                })}
             </Slider>
             <div
               className="group-hover:opacity-100 opacity-0 duration-700"
@@ -214,16 +208,13 @@ const HomePage = () => {
           </h3>
         </div>
         <div className="grid lg:grid-cols-5 grid-cols-2 md:grid-cols-4 lg:gap-10 gap-3 mt-10">
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
-          <ProductList />
+          {products &&
+            products.length > 0 &&
+            products.map((pro) => {
+              if (pro.price_discount == 0) {
+                return <ProductList product={pro} />;
+              }
+            })}
         </div>
         <div className="text-center pt-5">
           <ViewAll color="text-primary" content="View All" />

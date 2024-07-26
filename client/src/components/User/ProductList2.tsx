@@ -1,31 +1,34 @@
 import { Rating } from "@mui/material";
+import { IProduct } from "../../interfaces/IProduct";
 
-export default function ProductList2() {
+export default function ProductList2({ product }: { product: IProduct }) {
   return (
-    <div className="overflow-hidden flex gap-10 px-10 group shadow-catelist rounded-lg py-2">
+    <div className="overflow-hidden flex gap-10 px-10 group shadow-catelist rounded-lg py-2 dark:bg-util">
       <div className="max-w-[200px] relative rounded-xl overflow-hidden">
         <img
-          src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_2-600x600.jpg"
+          src={product.images[0]}
           alt="First"
           className="w-full h-full object-cover  transition-opacity duration-300 hover:opacity-0"
         />
         <img
-          src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_14.jpg"
+          src={product.images[1]}
           alt="Second"
           className="w-full h-full object-cover transition-opacity duration-700 opacity-0 hover:opacity-100 absolute top-0 left-0"
         />
       </div>
       <div className="pt-2">
         <div>
-          <span className="text-xs text-black/50">Games</span>
+          <span className="text-xs text-black/50">
+            {product.categoryId.name}
+          </span>
         </div>
         <div>
-          <h3 className="py-2 text-base dark:text-util">
-            Playstation 5 Drive Editoin
-          </h3>
+          <h3 className="py-2 text-base dark:text-black">{product.name}</h3>
         </div>
         <div className="pb-2">
-          <span className="text-base font-bold dark:text-util">$550.00</span>
+          <span className="text-base font-bold dark:text-black">
+            ${product.price.toFixed(1)}
+          </span>
         </div>
         <div>
           <Rating

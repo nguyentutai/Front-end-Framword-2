@@ -1,18 +1,31 @@
 import { Rating } from "@mui/material";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageZoom from "react-image-zooom";
-import ProductList from "../Utils/ProductList";
+import { useParams } from "react-router-dom";
+import instance from "../../instance/instance";
+import { IProduct } from "../../interfaces/IProduct";
+import ProductList from "./ProductList";
 function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
   event.preventDefault();
   console.info("You clicked a breadcrumb.");
 }
 export default function DetailProduct() {
-  const [imageZoom, setImageZoom] = useState(
-    "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_3-600x600.jpg"
-  );
+  const [product, setProduct] = useState<IProduct>({} as IProduct);
+  const [imageZoom, setImageZoom] = useState<string>("");
+  const [imageList, setImageList] = useState<string[]>([]);
   const [count, setCount] = useState(1);
+
+  const { slug } = useParams();
+  useEffect(() => {
+    (async () => {
+      const { data } = await instance.get("/products/detail/" + slug);
+      setImageList(data.data.images);
+      setImageZoom(data.data.images[0]);
+      setProduct(data.data);
+    })();
+  }, [slug]);
   return (
     <>
       <div className=" bg-[#E7EBEF] py-2 dark:bg-[#1E2832]">
@@ -25,21 +38,17 @@ export default function DetailProduct() {
               <Link underline="hover" color="inherit" href="/">
                 Home
               </Link>
-              <Link
-                underline="hover"
-                color="inherit"
-                href="/material-ui/getting-started/installation/"
-              >
+              <Link underline="hover" color="inherit" href="/products">
                 Products
               </Link>
               <Link
                 underline="hover"
                 color="text.primary"
-                href="/material-ui/react-breadcrumbs/"
+                href=""
                 aria-current="page"
                 className="dark:text-util/90 !text-sm"
               >
-                Detail Product
+                {product.name}
               </Link>
             </Breadcrumbs>
           </div>
@@ -49,71 +58,27 @@ export default function DetailProduct() {
         <div className="shadow rounded-xl gap-10 flex p-6">
           <div className="flex gap-5 items-center ">
             <div className="*:border flex flex-col max-w-fit justify-between *:max-w-20 gap-5">
-              <div
-                onClick={() =>
-                  setImageZoom(
-                    "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_3-600x600.jpg"
-                  )
-                }
-              >
-                <img
-                  className="max-w-[84px]"
-                  src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_3-600x600.jpg"
-                  alt=""
-                />
-              </div>
-              <div
-                onClick={() =>
-                  setImageZoom(
-                    "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15.jpg"
-                  )
-                }
-              >
-                <img
-                  className="max-w-[84px]"
-                  src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15.jpg"
-                  alt=""
-                />
-              </div>
-              <div
-                onClick={() =>
-                  setImageZoom(
-                    "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_14.jpg"
-                  )
-                }
-              >
-                <img
-                  className="max-w-[84px]"
-                  src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_14.jpg"
-                  alt=""
-                />
-              </div>
-              <div
-                onClick={() =>
-                  setImageZoom(
-                    "https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_13.jpg"
-                  )
-                }
-              >
-                <img
-                  className="max-w-[84px]"
-                  src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_13.jpg"
-                  alt=""
-                />
-              </div>
+              {Array.isArray(imageList) &&
+                imageList.length > 0 &&
+                imageList.map((img: string, index) => (
+                  <div key={index} onClick={() => setImageZoom(img as any)}>
+                    <img className="max-w-[84px]" src={img} alt="" />
+                  </div>
+                ))}
             </div>
             <div className="border max-w-[400px] min-w-[400px] min-h-[407px] p-4">
-              <ImageZoom
-                className="w-full"
-                src={imageZoom}
-                alt="A image to apply the ImageZoom plugin"
-                zoom="200"
-              />
+              {imageZoom && (
+                <ImageZoom
+                  className="!w-full !h-full"
+                  src={imageZoom}
+                  zoom={200}
+                />
+              )}
             </div>
           </div>
           <div className="">
             <div>
-              <h3 className="text-xl font-bold"> Mobile Game Controllers</h3>
+              <h3 className="text-xl font-bold">{product.name}</h3>
             </div>
             <div>
               <Rating
@@ -123,7 +88,7 @@ export default function DetailProduct() {
               />
             </div>
             <div className="py-4">
-              <span className="text-base font-bold">$190.00</span>
+              <span className="text-base font-bold">${product?.price}.0</span>
             </div>
             <div className="max-w-md">
               <p className="text-xs text-black/50 pb-5">
@@ -179,11 +144,9 @@ export default function DetailProduct() {
             </h3>
           </div>
           <div className="grid lg:grid-cols-5 grid-cols-2 md:grid-cols-4 lg:gap-10 gap-3 mt-10">
-            <ProductList />
-            <ProductList />
-            <ProductList />
-            <ProductList />
-            <ProductList />
+            {product?.categoryId?.productId?.slice(0, 5).map((pro) => (
+              <ProductList product={pro} />
+            ))}
           </div>
         </section>
       </div>
