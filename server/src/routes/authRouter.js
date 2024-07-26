@@ -12,4 +12,5 @@ authRouter.post("/register", validBodyRequest(registerSchemaValide), register);
 
 authRouter.post("/login", validBodyRequest(loginSchemaValide), login);
 
+// authRouter.get("/login-success/:id", loginSuscess);
 export default authRouter;

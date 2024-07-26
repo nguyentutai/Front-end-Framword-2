@@ -4,106 +4,175 @@ import { User } from "../../interfaces/IUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, ResSchema } from "../../schemaValid/AuthSchema";
 import instance from "../../instance/instance";
-import {
-    Button,
-    Checkbox,
-    FileInput,
-    Label,
-    Radio,
-    RangeSlider,
-    Select,
-    Textarea,
-    TextInput,
-    ToggleSwitch,
-} from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Props = {
-    isLogin?: boolean;
+  isLogin?: boolean;
 };
 const AuthForm = ({ isLogin }: Props) => {
-    const { login: contextLogin } = useAuth();
-    const {
-        handleSubmit,
-        formState: { errors },
-        register,
-        watch
-    } = useForm<User>({
-        resolver: zodResolver(isLogin ? LoginSchema : ResSchema)
-    });
-    const onSubmit = async (data: User) => {
-        try {
-            if (isLogin) {
-                const res = await instance.post(`auth/login`, data);
-                console.log(res.data);
-                contextLogin(res.data.token, res.data.data);
-            } else {
-                const res = await instance.post(`/auth/register`, { name: data.name, email: data.email, password: data.password });
-                alert(res.data.message);
-            }
-        } catch (error: any) {
-
-            alert(error.response?.data?.message || "Error!");
+  const nav = useNavigate();
+  const { login: contextLogin } = useAuth();
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    watch,
+  } = useForm<User>({
+    resolver: zodResolver(isLogin ? LoginSchema : ResSchema),
+  });
+  const onSubmit = async (data: User) => {
+    console.log(data);
+    try {
+      if (isLogin) {
+        const res = await instance.post(`auth/login`, data);
+        if (res.data.token) {
+          toast.success("Đăng nhập thành công");
         }
-    };
-    return (
-        <>
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                <div className="border border-2 border-primary rounded p-3" style={{ width: '600px' }}>
-                    <form className="flex max-w-md flex-col gap-4 pl-6" onSubmit={handleSubmit(onSubmit)}>
-                        <h1>{isLogin ? "Login" : "Register"}</h1>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="name" className="form-label" value="Your name" />
-                                <div className="text-red-500">{errors.name?.message}</div>
-                            </div>
-                            <TextInput id="name" type="name" placeholder="Tên Tài Khoản"   {...register("name", {
-                                required: true
-                            })} />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="email" className="form-label" value="Your email" />
-                                <div className="text-red-500">{errors.email?.message}</div>
-                            </div>
-                            <TextInput id="email" type="email" placeholder="Email"{...register("email", {
-                                required: true
-                            })} />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="password" className="form-label" value="Your password" />
-                                <div className="text-red-500">{errors.email?.message}</div>
-                            </div>
-                            <TextInput id="password" type="password" placeholder="PassWord" {...register("password", {
-                                required: true
-                            })} />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="password" className="form-label" value="Your ConfirmPass" />
-                                <div className="text-red-500">{errors.confirmPass?.message}</div>
-                            </div>
-                            <TextInput id="password" type="password" placeholder="ConfirmPass" {...register("confirmPass", {
-                                required: true,
-                                validate: (value) => {
-                                    if (value !== watch('password')) {
-                                        return 'Không khớp mật khẩu'
-                                    }
-                                }
-                            })} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Checkbox id="remember" />
-                            <Label htmlFor="remember">Remember me</Label>
-                        </div>
-                        <Button type="submit">{isLogin ? "Login" : "Register"}</Button>
-                        {isLogin ? <Link to="/register">Register</Link> : <Link to="/login">Login</Link>}
-                    </form>
+        contextLogin(res.data.token, res.data.data);
+      } else {
+        const res = await instance.post(`auth/register`, {
+          username: data.username,
+          email: data.email,
+          password: data.password,
+        });
+        console.log(res.data);
+        toast.success(res.data.message);
+        nav("/login");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Error!");
+    }
+  };
+  return (
+    <>
+      <div className="container-main">
+        <div className="flex justify-center pt-4">
+          <div className="flex justify-content-center shadow-catelist py-5 overflow-hidden rounded-lg align-items-center">
+            <div
+              className="border-1 border-primary w-full rounded-lg p-3"
+              style={{ width: "600px" }}
+            >
+              <form
+                className="flex  flex-col gap-4 px-10"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <h1 className="bg-primary w-fit px-6 py-2 rounded-lg text-white hover:opacity-90">
+                  {isLogin ? "Đăng Nhập" : "Đăng kí tài khoản"}
+                </h1>
+                {!isLogin && (
+                  <div>
+                    <div className="mb-2 block">
+                      <Label
+                        htmlFor="name"
+                        className="form-label"
+                        value="Your name"
+                      />
+                    </div>
+                    <TextInput
+                      id="name"
+                      type="text"
+                      placeholder="Tên Tài Khoản"
+                      {...register("username", {
+                        required: true,
+                      })}
+                    />
+                    <div className="text-red-500">
+                      {errors.username?.message}
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="email"
+                      className="form-label"
+                      value="Your email"
+                    />
+                  </div>
+                  <TextInput
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    {...register("email", {
+                      required: true,
+                    })}
+                  />
+                  <div className="text-red-500 text-sm pt-2">
+                    {errors.email?.message}
+                  </div>
                 </div>
+                <div>
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="password"
+                      className="form-label"
+                      value="Your password"
+                    />
+                  </div>
+                  <TextInput
+                    id="password"
+                    type="password"
+                    placeholder="Nhập password"
+                    {...register("password", {
+                      required: true,
+                    })}
+                  />
+                  <div className="text-red-500 text-sm pt-2">
+                    {errors.password?.message}
+                  </div>
+                </div>
+                {!isLogin && (
+                  <div>
+                    <div className="mb-2 block">
+                      <Label
+                        htmlFor="password"
+                        className="form-label"
+                        value="Your ConfirmPass"
+                      />
+                    </div>
+                    <TextInput
+                      id="password"
+                      type="password"
+                      placeholder="ConfirmPass"
+                      {...register("confirmPass", {
+                        required: true,
+                        validate: (value) => {
+                          if (value !== watch("password")) {
+                            return "Không khớp mật khẩu";
+                          }
+                        },
+                      })}
+                    />
+                    <div className="text-red-500">
+                      {errors.confirmPass?.message}
+                    </div>
+                  </div>
+                )}
+                <Button type="submit">{isLogin ? "Login" : "Register"}</Button>
+                {isLogin ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">Bạn chưa có tài khoản ? </span>
+                    <Link className="text-primary" to="/register">
+                      Đăng kí
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">Bạn đã có tài khoản ? </span>
+                    <Link className="text-primary" to="/login">
+                      Đăng nhập
+                    </Link>
+                  </div>
+                )}
+              </form>
             </div>
-        </>
-
-    )
-}
-export default AuthForm
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+export default AuthForm;

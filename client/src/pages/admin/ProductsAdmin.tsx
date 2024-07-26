@@ -1,4 +1,4 @@
-import { FileInput, Label, ToggleSwitch, Select } from "flowbite-react";
+import { FileInput, Label, ToggleSwitch, Select, Table } from "flowbite-react";
 import { Modal } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,8 @@ import axios from "axios";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { ProductContext } from "../../context/ProductContext";
 import swal from "sweetalert";
-
+import Highlighter from "react-highlight-words";
+import ButtonSubmit from "../../components/Admin/ButtonSubmit";
 const ProductsAdmin = () => {
   const [openModal, setOpenModal] = useState(false);
   const [statusProduct, setStatus] = useState(true);
@@ -22,22 +23,9 @@ const ProductsAdmin = () => {
   const [files, setFiles] = useState<string[]>([]);
   const [isActive, setActive] = useState(false);
   const { products, dispatch } = useContext(ProductContext);
-  const [AddOrUpdate,setAddOrUpdate]=useState<string>("ADD")
-  const [vauleSearch,setValueSearch]=useState<string>('')
-  //list data products
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await instance.get("products");
-        dispatch({
-          type: "LIST",
-          payload: data.data,
-        });
-      } catch (error) {
-        toast.error(error.response.data.message);
-      }
-    })();
-  }, []);
+  const [AddOrUpdate, setAddOrUpdate] = useState<string>("ADD");
+  const [valueSearch, setValueSearch] = useState<string>("");
+  
 
   const {
     register,
@@ -96,9 +84,9 @@ const ProductsAdmin = () => {
       setStatus(true);
       setOpenModal(false);
       dispatch({
-        type:"ADD",
-        payload:data.data
-      })
+        type: "ADD",
+        payload: data.data,
+      });
       toast.success("Thêm sản phẩm thành công!");
     } catch (error) {
       toast.error(error.response.data.message);
@@ -108,7 +96,11 @@ const ProductsAdmin = () => {
     (async () => {
       try {
         const { data } = await instance.get("categorys");
-        setCategorys(data.data);
+        setCategorys(
+          data.data.filter((category: ICategory) => {
+            return category.status === true;
+          })
+        );
       } catch (error) {
         toast.error(error.response.data.message);
       }
@@ -119,37 +111,44 @@ const ProductsAdmin = () => {
     setFiles([...files].filter((file) => file.name !== image_name));
   };
 
-  const handleRemoveProduct= async (id:string)=>{
+  const handleRemoveProduct = async (id: string) => {
     try {
-      await instance.delete(`products/${id}`)
+      await instance.delete(`products/${id}`);
       dispatch({
-        type:"DELETE",
-        payload:id
-      })
+        type: "DELETE",
+        payload: id,
+      });
     } catch (error) {
       toast.error(error.response.data.message);
     }
-  }
-  const fillDataProduct= async (id:string)=>{
+  };
+  const fillDataProduct = async (id: string) => {
     try {
-      const {data}=await instance.get(`products/${id}`)
+      const { data } = await instance.get(`products/${id}`);
       console.log(data);
-      reset(data.data)
+      setFiles(data.data.images);
+      reset({
+        ...data.data,
+        categoryId: data.data.categoryId._id,
+        images: files,
+      });
     } catch (error) {
       toast.error(error.response.data.message);
     }
-  }
+  };
 
-  const handleUpdateStatusProduct= async(id:string,statusProduct:boolean)=>{
+  const handleUpdateStatusProduct = async (
+    id: string,
+    statusProduct: boolean
+  ) => {
     try {
-      const {data}=await instance.patch(`products/${id}`,{
-        status:statusProduct
-      })
-      console.log(data);
+      const { data } = await instance.patch(`products/${id}`, {
+        status: statusProduct,
+      });
       dispatch({
-        type:"UPDATE",
-        payload:data.data
-      })
+        type: "UPDATE",
+        payload: data.data,
+      });
 
       if (data.data.status) {
         toast.success("Public");
@@ -159,7 +158,7 @@ const ProductsAdmin = () => {
     } catch (error) {
       toast.error(error.response.data.message);
     }
-  }
+  };
 
   return (
     <div className="products-admin">
@@ -227,12 +226,12 @@ const ProductsAdmin = () => {
                       htmlFor="name-category"
                       className="font-medium text-sm"
                     >
-                      Tên danh mục
+                      Tên sản phẩm
                     </label>
                     <input
                       type="text"
                       className="block border border-[#d9d9d9] rounded-md w-full h-10 text-sm"
-                      placeholder="Tên danh mục: "
+                      placeholder="Tên sản phẩm: "
                       {...register("name")}
                     />
                     <span className="text-sm text-red-400">
@@ -359,7 +358,7 @@ const ProductsAdmin = () => {
                             <div className="flex items-center justify-betweenv w-full gap-2">
                               <div className="max-w-[100px] w-full h-full">
                                 <img
-                                  src={URL.createObjectURL(file)}
+                                  src={URL.createObjectURL(file as any)}
                                   className="rounded-md inline-block object-cover"
                                 />
                               </div>
@@ -413,126 +412,135 @@ const ProductsAdmin = () => {
                     />
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  className="flex items-center py-2 px-4 bg-primary text-util rounded-md hover:bg-util hover:text-primary hover:outline hover:outline-primary transition-all "
-                >
-                  {/* {AddOrUpdate === "ADD" ? "Thêm" : "Sửa"} danh mục */}
-                  Thêm sản phẩm
-                </button>
+                <ButtonSubmit content="Thêm sản phẩm" />
               </form>
             </div>
           </LoadingOverlay>
         </Modal.Body>
       </Modal>
-      <div className="mt-10">
-        <table className="table w-full">
-          <thead>
-            <tr className="*:border h-14">
-              <th>STT</th>
-              <th>Tên sản phẩm</th>
-              <th>Danh mục</th>
-              <th>Giá</th>
-              <th>Ảnh sản phẩm</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.filter((item)=>{
-              return item.name.toLowerCase().includes(vauleSearch.toLowerCase())
-            })
-            .map((product, index) => {
-              return (
-                <tr key={product._id} className="text-center *:border h-12 text-sm">
-                  <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>{product.categoryId?.name}</td>
-                  <td>{product.price.toLocaleString()}</td>
-                  <td>
-                    <div className="max-w-[50px] h-[50px] w-fit mx-auto rounded-full overflow-hidden shadow p-2 my-2">
-                      <img
-                        src={product.images[0]}
-                        className="w-full object-cover"
+      <div className="overflow-x-auto w-full mt-8">
+        <Table hoverable className="table w-full">
+          <Table.Head className="text-center">
+            <Table.HeadCell>STT</Table.HeadCell>
+            <Table.HeadCell>Tên sản phẩm</Table.HeadCell>
+            <Table.HeadCell>Danh mục</Table.HeadCell>
+            <Table.HeadCell>Giá</Table.HeadCell>
+            <Table.HeadCell>Ảnh sản phẩm</Table.HeadCell>
+            <Table.HeadCell>Trạng thái</Table.HeadCell>
+            <Table.HeadCell>Hành động</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {products
+              .filter((item) => {
+                return item.name
+                  .toLowerCase()
+                  .includes(valueSearch.toLowerCase());
+              })
+              .map((product, index) => {
+                return (
+                  <Table.Row
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800 text-center"
+                    key={product._id}
+                  >
+                    <Table.Cell>{index + 1}</Table.Cell>
+                    <Table.Cell>
+                      {" "}
+                      <Highlighter
+                        highlightClassName="YourHighlightClass"
+                        searchWords={[valueSearch.toLowerCase()]}
+                        autoEscape={true}
+                        textToHighlight={product.name}
                       />
-                    </div>
-                  </td>
-                  <td>
-                    <ToggleSwitch
-                      checked={product.status}
-                      className="mx-auto"
-                      onChange={()=>{
-                        setStatus(!product.status)
-                        handleUpdateStatusProduct(product._id!,!product.status)
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <div className="flex justify-center gap-2">
-                      <button
-                        className="bg-util shadow py-1.5 px-3 rounded-md"
-                        onClick={() => {
-                          swal({
-                            title: "Bạn có muốn xóa sản phẩm này ?",
-                            text: "Sau khi xóa sẽ không thể không phục !",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                          }).then((willDelete) => {
-                            if (willDelete) {
-                              handleRemoveProduct(product._id!);
-                              swal("Xóa sản phẩm thành công !", {
-                                icon: "success",
-                              });
-                            }
-                          });
+                    </Table.Cell>
+                    <Table.Cell>{product.categoryId.name}</Table.Cell>
+                    <Table.Cell>{product.price.toLocaleString()}</Table.Cell>
+                    <Table.Cell>
+                      <div className="max-w-[50px] h-[50px] w-fit mx-auto rounded-full overflow-hidden shadow p-2">
+                        <img
+                          src={product.images[0]}
+                          className="w-full object-cover"
+                        />
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <ToggleSwitch
+                        checked={product.status}
+                        className="mx-auto"
+                        onChange={() => {
+                          setStatus(!product.status);
+                          handleUpdateStatusProduct(
+                            product._id!,
+                            !product.status
+                          );
                         }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="red"
-                          className="size-5"
+                      />
+                    </Table.Cell>
+                    <Table.Cell>
+                      <div className="flex justify-center gap-2">
+                        <button
+                          className="bg-util shadow py-1.5 px-3 rounded-md"
+                          onClick={() => {
+                            swal({
+                              title: "Bạn có muốn xóa sản phẩm này ?",
+                              text: "Sau khi xóa sẽ không thể không phục !",
+                              icon: "warning",
+                              buttons: true,
+                              dangerMode: true,
+                            }).then((willDelete) => {
+                              if (willDelete) {
+                                handleRemoveProduct(product._id!);
+                                swal("Xóa sản phẩm thành công !", {
+                                  icon: "success",
+                                });
+                              }
+                            });
+                          }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        className="bg-util shadow py-1.5 px-3 rounded-md"
-                        onClick={() => {
-                          setOpenModal(true);
-                          setAddOrUpdate("UPDATE");
-                          fillDataProduct(product._id!)
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="#1B95F2"
-                          className="size-5"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="red"
+                            className="size-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="bg-util shadow py-1.5 px-3 rounded-md"
+                          onClick={() => {
+                            setOpenModal(true);
+                            setAddOrUpdate("UPDATE");
+                            fillDataProduct(product._id!);
+                          }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="#1B95F2"
+                            className="size-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
+          </Table.Body>
+        </Table>
       </div>
     </div>
   );

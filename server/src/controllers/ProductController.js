@@ -4,7 +4,10 @@ import productSchema from "../models/productSchema.js";
 class ProductController {
   async getAllProduct(req, res) {
     try {
-      const data = await productSchema.find({}).populate("categoryId").sort({createdAt: -1})
+      const data = await productSchema
+        .find({})
+        .populate("categoryId")
+        .sort({ createdAt: -1 });
       if (data) {
         return res.status(201).send({
           message: "GetAll Products Successfully",
@@ -33,6 +36,29 @@ class ProductController {
     }
   }
 
+  async getProductBySlug(req, res) {
+    try {
+      const data = await productSchema
+        .findOne({ slug: req.params.slug })
+        .populate({
+          path: "categoryId",
+          populate: {
+            path: "productId",
+            model: "products",
+          },
+        })
+        .populate("commentId");
+      if (data) {
+        return res.status(201).send({
+          message: "GetProductBySlug Successfully",
+          data,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
   async postProduct(req, res) {
     try {
       const checkSlug = await productSchema.findOne({ slug: req.body.slug });
@@ -43,7 +69,7 @@ class ProductController {
       }
       // Thêm sản phẩm
       const data = await productSchema.create(req.body);
-      
+
       // lấy ra id sản phẩm thêm vào bảng category
       const catgoryId = await categorySchema.findByIdAndUpdate(
         data.categoryId,
@@ -101,10 +127,14 @@ class ProductController {
     }
   }
 
-  async updateStatusProduct(req,res){
+  async updateStatusProduct(req, res) {
     try {
-      const {status}=req.body
-      const data=await productSchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      const { status } = req.body;
+      const data = await productSchema.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
       if (data) {
         return res.status(200).send({
           status: true,
@@ -198,12 +228,13 @@ class ProductController {
       // Lấy thông tin trang hiện tại url || 1
       const page = parseInt(req.query.page) || 1;
       // Lấy số sản phẩm trên 1 trang tại url || 10
-      const limit = parseInt(req.query.limit) || 10;
+      const limit = parseInt(req.query.limit) || 12;
 
       // B1: Lấy ra tất cả sản phẩm find
       // B2: Bỏ qua các sản phẩm ở trang trước đó
       const data = await productSchema
         .find()
+        .populate("categoryId", "name")
         .skip((page - 1) * limit)
         .limit(limit)
         .exec();
