@@ -16,5 +16,6 @@ router.use("/blogs", blogRouter);
 router.use("/vouchers", voucherRouter);
 router.use("/comments", commentRouter);
 router.use("/auth", authRouter);
+router.use("/user", userRouter);
 
 export default router;

@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import ProductList1 from "./ProductList1";
 import ProductList2 from "./ProductList2";
@@ -14,84 +14,64 @@ import { IProduct } from "../../interfaces/IProduct";
 
 function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
   event.preventDefault();
-  console.info("You clicked a breadcrumb.");
 }
 
 export default function ProductListPage() {
   const { categorys } = useContext(CategorysContext);
-  const [sort, setSort] = useState("");
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [pageCate, setPageCate] = useState<number>(() => {
-    return parseInt(sessionStorage.getItem("currentPageCate") || "1");
-  });
-  const [page, setPage] = useState<number>(() => {
-    return parseInt(sessionStorage.getItem("currentPage") || "1");
-  });
   const [listPro, setListPro] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [totalPagesCate, setTotalPagesCate] = useState(0);
-
   const { slug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1");
+  const pageCate = parseInt(searchParams.get("pageCate") || "1");
+  const sort = searchParams.get("sort") || "";
+
   const handleChange = (event: SelectChangeEvent) => {
-    setSort(event.target.value);
+    setSearchParams({ sort: event.target.value, page: "1", pageCate: "1" });
   };
 
   useEffect(() => {
     (async () => {
-      sessionStorage.setItem("currentPage", page.toString());
       const { data } = await instance.get(`products/pagination?page=${page}`);
-      if (sort) {
-        if (sort == "ascending") {
-          setProducts(
-            data.data.sort((a: IProduct, b: IProduct) => a.price - b.price)
-          );
-        }
-        if (sort == "descending") {
-          setProducts(
-            data.data.sort((a: IProduct, b: IProduct) => b.price - a.price)
-          );
-        }
-      }
-      setProducts(data.data);
+      const sortedData = sortProducts(data.data, sort);
+      setProducts(sortedData);
       setTotalPages(data.totalPages);
     })();
-  }, [page, sort]);
+  }, [page, sort, slug]);
 
   useEffect(() => {
     (async () => {
       if (slug) {
-        sessionStorage.setItem("currentPageCate", pageCate.toString());
         const { data } = await instance.get(
           `categorys/${slug}?page=${pageCate}`
         );
-        if (sort) {
-          if (sort == "ascending") {
-            setProducts(
-              data.data.productId[0].sort(
-                (a: IProduct, b: IProduct) => a.price - b.price
-              )
-            );
-          }
-          if (sort == "descending") {
-            setProducts(
-              data.data.productId[0].sort(
-                (a: IProduct, b: IProduct) => b.price - a.price
-              )
-            );
-          }
-        }
+        const sortedData = sortProducts(data.data.productId[0], sort);
+        setProducts(sortedData);
         setTotalPagesCate(data.data.productId[1].totalPages);
-        setProducts(data.data.productId[0]);
       }
     })();
   }, [slug, pageCate, sort]);
 
+  const sortProducts = (products: IProduct[], sortOrder: string) => {
+    if (sortOrder === "ascending") {
+      return products.sort((a, b) => a.price - b.price);
+    }
+    if (sortOrder === "descending") {
+      return products.sort((a: any, b: any) => b.price - a.price);
+    }
+    return products;
+  };
+
   const handlePageClick = (pageNumber: number) => {
-    setPage(pageNumber);
+    setSearchParams({ page: pageNumber.toString() });
   };
+
   const handlePageClickCate = (pageNumber: number) => {
-    setPageCate(pageNumber);
+    setSearchParams({ pageCate: pageNumber.toString() });
   };
+
   return (
     <>
       <div className="bg-[#E7EBEF] py-2 dark:bg-[#1E2832]">
@@ -254,11 +234,11 @@ export default function ProductListPage() {
             <div className="flex justify-center items-center gap-3 pt-4">
               <button
                 className={`${
-                  page == 1
+                  page === 1
                     ? "border py-1 px-1 rounded-md"
                     : "bg-black/20 py-1 px-1 rounded-md border cursor-pointer"
-                } `}
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                }`}
+                onClick={() => handlePageClick(page - 1)}
                 disabled={page === 1}
               >
                 <svg
@@ -291,13 +271,11 @@ export default function ProductListPage() {
               ))}
               <button
                 className={`${
-                  page == totalPages
+                  page === totalPages
                     ? "border py-1 px-1 rounded-md dark:text-util"
                     : "bg-black/20 py-1 px-1 rounded-md border cursor-pointer dark:text-util"
-                } `}
-                onClick={() =>
-                  setPage((prev) => Math.min(prev + 1, totalPages))
-                }
+                }`}
+                onClick={() => handlePageClick(page + 1)}
                 disabled={page === totalPages}
               >
                 <svg
@@ -317,14 +295,14 @@ export default function ProductListPage() {
               </button>
             </div>
           ) : (
-            <div className="flex justify-center items-center gap-2 pt-4">
+            <div className="flex justify-center items-center gap-3 pt-4">
               <button
                 className={`${
-                  pageCate == 1
-                    ? "border py-1 px-1 rounded-md "
+                  pageCate === 1
+                    ? "border py-1 px-1 rounded-md"
                     : "bg-black/20 py-1 px-1 rounded-md border cursor-pointer"
-                } `}
-                onClick={() => setPageCate((prev) => Math.max(prev - 1, 1))}
+                }`}
+                onClick={() => handlePageClickCate(pageCate - 1)}
                 disabled={pageCate === 1}
               >
                 <svg
@@ -348,7 +326,7 @@ export default function ProductListPage() {
                   onClick={() => handlePageClickCate(index + 1)}
                   className={`${
                     pageCate === index + 1
-                      ? "bg-blue-500 rounded-md dark:text-util text-white font-semibold"
+                      ? "bg-blue-500 rounded-md text-white font-semibold"
                       : ""
                   } px-3 py-1`}
                 >
@@ -357,13 +335,11 @@ export default function ProductListPage() {
               ))}
               <button
                 className={`${
-                  pageCate == totalPagesCate
-                    ? "border py-1 px-1 rounded-md"
-                    : "bg-black/20 py-1 px-1 rounded-md border cursor-pointer"
-                } `}
-                onClick={() =>
-                  setPageCate((prev) => Math.min(prev + 1, totalPagesCate))
-                }
+                  pageCate === totalPagesCate
+                    ? "border py-1 px-1 rounded-md dark:text-util"
+                    : "bg-black/20 py-1 px-1 rounded-md border cursor-pointer dark:text-util"
+                }`}
+                onClick={() => handlePageClickCate(pageCate + 1)}
                 disabled={pageCate === totalPagesCate}
               >
                 <svg
