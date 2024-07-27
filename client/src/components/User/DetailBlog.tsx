@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function NewsPage() {
+export default function DetailBlog() {
   return (
     <>
       <main className="flex mt-5 w-full">
@@ -36,25 +36,27 @@ export default function NewsPage() {
               posuere cubilia Curae; Morbi vel eros odio. Phasellus risus
               ligula.
             </p>
-            <div className="highlight py-2 px-5 my-5 mx-0 italic border border-gray-300 rounded-lg">
+            <div className="highlight py-2 px-5 my-5 mx-0 italic border border-gray-300 rounded-lg relative before:content-[''] before:absolute before:top-0 before:left-0 before:h-full before:w-1 before:bg-red-600 after:content-[''] after:absolute after:top-0 after:right-0 after:h-full after:w-1 after:bg-red-600">
               Vitae aliquam lacus pellentesque nec. Fusce mattis orci sed lacus
               condimentum malesuada. In hac habitasse platea dictumst. Integer
               felis ipsum, laoreet in gravida in, vehicula vitae tortor.
               Curabitur vestibulum nisl metus, ac auctor ligula. Morbi egestas
               odio tincidunt mauris dictum non faucibus ipsum ornare.
             </div>
-            <div className="post-image flex my-5 mx-0 border border-gray-300 rounded-lg p-2">
+
+            <div className="post-image my-5 mx-0 border border-gray-300 rounded-lg p-2 text-center">
               <img
                 src="images/game1.jpg"
                 alt="Post Image"
-                className="w-2/4 h-auto mr-3.5 rounded-lg"
+                className="w-full h-auto rounded-lg"
               />
-              <p>
-                Magna odio elementum eros, vel volutpat nisi libero sed erat.
+              <p className="italic mt-2">
+                magna odio elementum eros, vel volutpat nisi libero sed erat.
                 Donec lobortis consequat orci, in malesuada ante aliquam nec.
-                Nullam sed.
+                Nullam sed
               </p>
             </div>
+
             <p>
               Mauris eu magna et nunc commodo congue. Morbi tincidunt commodo
               diam, vitae aliquam lacus pellentesque nec. Fusce mattis orci sed
