@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { User } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 import { useNavigate } from "react-router-dom";
 
 export interface AuthContextType {
-  user: User | null;
-  login: (token: string, user: User) => void;
+  user: IUser | null;
+  login: (token: string, user: IUser) => void;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -20,7 +20,7 @@ export const useAuth = () => {
   return context;
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const nav = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = (token: string, user: User) => {
+  const login = (token: string, user: IUser) => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);

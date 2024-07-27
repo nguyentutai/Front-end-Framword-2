@@ -40,7 +40,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route element={<LayoutUser />}>
                     <Route index element={<HomePage />} />
                     <Route path="blogs" element={<BlogPage />} />
-                    <Route path="/news" element={<NewsPage />} />
+                    <Route path="news" element={<NewsPage />} />
                     <Route path="detail/:slug" element={<DetailProduct />} />
                     <Route path="products" element={<ProductList />} />
                     <Route path="products/:slug" element={<ProductList />} />
@@ -51,6 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route path="admin" element={<LayoutAdmin />}>
                     <Route path="categorys" element={<CategorysAdmin />} />
                     <Route path="products" element={<ProductsAdmin />} />
+                    <Route path="users" element={<UsersAdmin />} />
                     <Route path="blogs" element={<BlogsAdmin />} />
                     <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />
                     <Route path="vouchers" element={<VouchersAdmin />} />
