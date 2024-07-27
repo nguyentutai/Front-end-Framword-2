@@ -5,11 +5,13 @@ import voucherRouter from "./voucherRouter.js";
 import authRouter from "./authRouter.js";
 import commentRouter from "./commentRouter.js";
 import blogRouter from "./blogRouter.js";
+import userRouter from "./userRouter.js";
 
 const router = Router();
 
 router.use("/products", productRouter);
 router.use("/categorys", categoryRouter);
+router.use("/users", userRouter);
 router.use("/blogs", blogRouter);
 router.use("/vouchers", voucherRouter);
 router.use("/comments", commentRouter);
