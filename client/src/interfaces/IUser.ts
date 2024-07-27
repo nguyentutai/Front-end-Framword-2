@@ -1,3 +1,4 @@
+
 export interface IUser{
     _id?:string,
     username:string,
@@ -6,5 +7,7 @@ export interface IUser{
     address:string,
     status:boolean,
     avatar:string,
-    role: "member" | "admin"
+    password: string;
+    confirmPass: string;
+    role?: "member" | "admin"
 }

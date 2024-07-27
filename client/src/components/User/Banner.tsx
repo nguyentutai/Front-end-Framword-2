@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import { useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Button from "../Utils/Button";
+import Button from "./Button";
 
 const Banner = () => {
   const sliderRef = useRef<Slider>(null);
@@ -12,7 +12,6 @@ const Banner = () => {
     }
   };
   const previous = () => {
-    console.log("1");
     if (sliderRef.current) {
       sliderRef.current.slickPrev();
     }
@@ -22,6 +21,7 @@ const Banner = () => {
     infinite: true,
     autoplay: true,
     speed: 500,
+    arrows: false,
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
@@ -51,16 +51,12 @@ const Banner = () => {
   ];
 
   return (
-    <div className="my-4 relative w-full container-main rounded-lg md:overflow-hidden">
-      <Slider
-        {...settings}
-        ref={sliderRef}
-        className={`w-full`}
-      >
+    <div className="py-4 relative w-full container-main rounded-lg md:overflow-hidden">
+      <Slider {...settings} ref={sliderRef} className={`w-full`}>
         {BannerArray.map((item, index) => (
           <div
             key={index}
-            className={`relative w-full min-h-[450px] max-h-none lg:max-h-[450px] bg-[url('${item.bannerUrl}')] object-cover`}
+            className={`relative w-full min-h-[450px] max-h-none lg:max-h-[450px] bg-[url('https://hex-wp.com/gamemart/wp-content/uploads/2024/03/homepage_3_slider_1_item_1.jpg')] object-cover`}
           >
             <div className="flex flex-col lg:flex-row gap-0 lg:gap-16 justify-between w-full p-5 lg:p-10 items-center">
               <div className="space-y-5">
@@ -84,7 +80,7 @@ const Banner = () => {
       </Slider>
       <div className="" style={{ textAlign: "center" }}>
         <div
-          className="absolute top-[44%] left-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] left-8%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={previous}
         >
           <svg
@@ -96,7 +92,7 @@ const Banner = () => {
           </svg>
         </div>
         <div
-          className="absolute top-[44%] right-[3%] bg-white rounded-full p-1.5 cursor-pointer"
+          className="absolute top-[44%] right-[5.5%] bg-white rounded-full p-1.5 cursor-pointer"
           onClick={next}
         >
           <svg

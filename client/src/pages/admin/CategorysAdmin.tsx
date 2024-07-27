@@ -20,21 +20,21 @@ const CategorysAdmin = () => {
   const [AddOrUpdate, setAddOrUpdate] = useState<string>("ADD");
   const [idCategory, setIdCategory] = useState<string>("");
   const [valueSearch, setvalueSearch] = useState<string>("");
-  
-  //list data categorys
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await instance.get("categorys");
-        dispatch({
-          type: "LIST",
-          payload: data.data,
-        });
-      } catch (error) {
-        toast.error(`Lỗi ${error.response.data.message}`);
-      }
-    })();
-  }, []);
+
+  // //list data categorys
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const { data } = await instance.get("categorys");
+  //       dispatch({
+  //         type: "LIST",
+  //         payload: data.data,
+  //       });
+  //     } catch (error) {
+  //       toast.error(`Lỗi ${error.response.data.message}`);
+  //     }
+  //   })();
+  // }, []);
 
   // update status category
   const handleUpdateStatus = async (id: string, statusCategory: boolean) => {

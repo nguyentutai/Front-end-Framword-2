@@ -291,12 +291,12 @@ const ProductsAdmin = () => {
                       htmlFor="name-category"
                       className="font-medium text-sm"
                     >
-                      Tên danh mục
+                      Tên sản phẩm
                     </label>
                     <input
                       type="text"
                       className="block border border-[#d9d9d9] rounded-md w-full h-10 text-sm"
-                      placeholder="Tên danh mục: "
+                      placeholder="Tên sản phẩm: "
                       {...register("name")}
                     />
                     <span className="text-sm text-red-400">

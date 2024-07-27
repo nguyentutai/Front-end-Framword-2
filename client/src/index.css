@@ -9,7 +9,7 @@
 }
 
 .container-main {
-  @apply container mx-auto px-4;
+  @apply container px-2 lg:px-20 mx-auto;
 }
 
 .bgr-dark {
@@ -21,6 +21,36 @@
 .btn:hover {
   @apply outline outline-white shadow-md bg-transparent text-white;
 }
+.link {
+  @apply leading-[40px] bg-transparent rounded-full inline-block font-bold text-sm px-6 transition ease-in-out bg-primary text-util;
+}
+.link:hover {
+  @apply outline outline-2 outline-primary/50 shadow-md bg-transparent text-primary transition-all;
+}
+.tab-border-bottom::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -16px;
+  background-color: #1b95f2;
+  display: block;
+}
+/* Add these styles to your CSS file */
+.zoom-container {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 150%; /* Adjust the width as needed */
+  height: 150%; /* Adjust the height as needed */
+  border: 1px solid #ccc; /* Optional: add border */
+  background-color: rgba(255, 255, 255, 0.8); /* Optional: add background */
+  overflow: hidden;
+}
+.zoom-image {
+  width: 100%; /* Ensure the image fits within the zoom container */
+}
+
 .active {
   background-color: #1b95f2;
   color: white;
@@ -38,6 +68,6 @@
   background-color: #1b95f2;
   border-radius: 50px;
 }
-.jodit-wysiwyg{
+.jodit-wysiwyg {
   min-height: 350px !important;
 }
