@@ -31,20 +31,6 @@ const ProductsAdmin = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1");
   const [totalPage, setTotalPage] = useState();
-  //list data products
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const { data } = await instance.get("products");
-  //       dispatch({
-  //         type: "LIST",
-  //         payload: data.data,
-  //       });
-  //     } catch (error) {
-  //       toast.error(error.response.data.message);
-  //     }
-  //   })();
-  // }, []);
 
   const {
     register,
