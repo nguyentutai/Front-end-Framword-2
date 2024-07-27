@@ -4,11 +4,15 @@ const UserModel = new mongoose.Schema(
   {
     username: {
       type: String,
+      required:true
     },
     email: {
       type: String,
       required: true,
       unique: true,
+    },
+    name:{
+      type:String
     },
     password: {
       type: String,
@@ -17,6 +21,9 @@ const UserModel = new mongoose.Schema(
     avatar: {
       type: String,
       default: "",
+    },
+    address:{
+      type:String
     },
     role: {
       type: String,

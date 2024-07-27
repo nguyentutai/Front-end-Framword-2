@@ -4,8 +4,11 @@ import { checkAuth } from "../middlewares/checkAuth.js";
 
 const userRouter = Router();
 
-const UserModel = new UserController();
+const userControll=new UserController()
+userRouter.get('/',userControll.getAllUser)
+userRouter.get('/:id',userControll.getUserById)
+userRouter.patch("/profile/:id", checkAuth, userControll.updateUser);
+userRouter.put('/:id',userControll.updateUser)
+userRouter.patch('/:id',userControll.updateStatusUser)
 
-userRouter.patch("/profile/:id", checkAuth, UserModel.updateUser);
-
-export default userRouter;
+export default userRouter

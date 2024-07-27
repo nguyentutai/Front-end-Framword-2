@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
-import { User } from "../../interfaces/IUser";
+import { IUser } from "../../interfaces/IUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, ResSchema } from "../../schemaValid/AuthSchema";
 import instance from "../../instance/instance";
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -19,11 +19,10 @@ const AuthForm = ({ isLogin }: Props) => {
     formState: { errors },
     register,
     watch,
-  } = useForm<User>({
+  } = useForm<IUser>({
     resolver: zodResolver(isLogin ? LoginSchema : ResSchema),
   });
-  const onSubmit = async (data: User) => {
-    console.log(data);
+  const onSubmit = async (data: IUser) => {
     try {
       if (isLogin) {
         const res = await instance.post(`auth/login`, data);
@@ -37,7 +36,6 @@ const AuthForm = ({ isLogin }: Props) => {
           email: data.email,
           password: data.password,
         });
-        console.log(res.data);
         toast.success(res.data.message);
         nav("/login");
       }
