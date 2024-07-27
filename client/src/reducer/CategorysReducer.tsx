@@ -19,7 +19,7 @@ const CategorysReducer = (state: any, action: any) => {
       })
 
     default:
-      return state;
+      break;
   }
 };
 

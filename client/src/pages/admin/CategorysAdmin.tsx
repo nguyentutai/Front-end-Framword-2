@@ -288,7 +288,7 @@ const CategorysAdmin = () => {
                       key={category._id}
                     >
                       <Table.Cell>{index + 1}</Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {" "}
                         <Highlighter
                           highlightClassName="YourHighlightClass"
