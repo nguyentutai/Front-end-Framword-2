@@ -24,7 +24,6 @@ import ScrollToTop from "./utils/ScrollTop.tsx";
 
 import NewsPage from "./components/User/NewsPage.tsx";
 
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
