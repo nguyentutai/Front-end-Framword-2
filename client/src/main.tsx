@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutAdmin from "./pages/admin/LayoutAdmin.tsx";
 import LayoutUser from "./pages/user/LayoutUser.tsx";
@@ -24,43 +25,46 @@ import DetailProduct from "./components/User/DetailProduct.tsx";
 import ProductList from "./components/User/ProductListPage.tsx";
 import ScrollToTop from "./utils/ScrollTop.tsx";
 import NewsPage from "./components/User/NewsPage.tsx";
-
-
+import { CartProvider } from "./context/CartContext.tsx";
+import Order from "./components/Cart/Order.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ProductProvider>
-          <CategorysProvider>
-            <BlogProvider>
-              <ScrollToTop />
-              <Routes>
-                <Route path="" element={<App />}>
-                  {/* User */}
-                  <Route element={<LayoutUser />}>
-                    <Route index element={<HomePage />} />
-                    <Route path="blogs" element={<BlogPage />} />
-                    <Route path="news" element={<NewsPage />} />
-                    <Route path="detail/:slug" element={<DetailProduct />} />
-                    <Route path="products" element={<ProductList />} />
-                    <Route path="products/:slug" element={<ProductList />} />
-                    <Route path="register" element={<AuthForm />} />
-                    <Route path="login" element={<AuthForm isLogin />} />
+        <CartProvider>
+          <ProductProvider>
+            <CategorysProvider>
+              <BlogProvider>
+                <ScrollToTop />
+                <Routes>
+                  <Route path="" element={<App />}>
+                    {/* User */}
+                    <Route element={<LayoutUser />}>
+                      <Route index element={<HomePage />} />
+                      <Route path="blogs" element={<BlogPage />} />
+                      <Route path="order" element={<Order />} />
+                      <Route path="news/:slug" element={<NewsPage />} />
+                      <Route path="detail/:slug" element={<DetailProduct />} />
+                      <Route path="products" element={<ProductList />} />
+                      <Route path="products/:slug" element={<ProductList />} />
+                      <Route path="register" element={<AuthForm />} />
+                      <Route path="login" element={<AuthForm isLogin />} />
+                    </Route>
+                    {/* Admin */}
+                    <Route path="admin" element={<LayoutAdmin />}>
+                      <Route path="categorys" element={<CategorysAdmin />} />
+                      <Route path="products" element={<ProductsAdmin />} />
+                      <Route path="users" element={<UsersAdmin />} />
+                      <Route path="blogs" element={<BlogsAdmin />} />
+                      <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />
+                      <Route path="vouchers" element={<VouchersAdmin />} />
+                    </Route>
                   </Route>
-                  {/* Admin */}
-                  <Route path="admin" element={<LayoutAdmin />}>
-                    <Route path="categorys" element={<CategorysAdmin />} />
-                    <Route path="products" element={<ProductsAdmin />} />
-                    <Route path="users" element={<UsersAdmin />} />
-                    <Route path="blogs" element={<BlogsAdmin />} />
-                    <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />
-                    <Route path="vouchers" element={<VouchersAdmin />} />
-                  </Route>
-                </Route>
-              </Routes>
-            </BlogProvider>
-          </CategorysProvider>
-        </ProductProvider>
+                </Routes>
+              </BlogProvider>
+            </CategorysProvider>
+          </ProductProvider>
+        </CartProvider>
       </AuthProvider>
       <ToastContainer autoClose={3000} newestOnTop />
     </BrowserRouter>

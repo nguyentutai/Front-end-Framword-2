@@ -6,6 +6,8 @@ import authRouter from "./authRouter.js";
 import commentRouter from "./commentRouter.js";
 import blogRouter from "./blogRouter.js";
 import userRouter from "./userRouter.js";
+import cartRouter from "./cartRouter.js";
+import orderRouter from "./orderRouter.js";
 
 const router = Router();
 
@@ -16,5 +18,7 @@ router.use("/blogs", blogRouter);
 router.use("/vouchers", voucherRouter);
 router.use("/comments", commentRouter);
 router.use("/auth", authRouter);
+router.use("/cart", cartRouter);
+router.use("/order", orderRouter);
 
 export default router;

@@ -3,8 +3,8 @@ import { IProduct } from "../../interfaces/IProduct";
 
 export default function ProductList1({ product }: { product: IProduct }) {
   return (
-    <div className="text-center relative overflow-hidden group shadow-catelist rounded-xl py-5 dark:bg-util">
-      <div className="max-w-[200px] relative mx-auto rounded-xl overflow-hidden ">
+    <div className="text-center max-h-[400px] relative overflow-hidden group shadow-catelist rounded-xl py-5 dark:bg-util">
+      <div className="max-w-[200px] min-h-56 flex items-center relative mx-auto rounded-xl overflow-hidden ">
         <img
           src={product.images[0]}
           alt="First"

@@ -1,6 +1,6 @@
 import Banner from "./Banner";
 import Slider from "react-slick";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Button from "./Button";
@@ -9,10 +9,19 @@ import ProductList from "./ProductList";
 import ViewAll from "./ViewAll";
 import BlogHome from "./BlogHome";
 import { ProductContext } from "../../context/ProductContext";
+import { IBlog } from "../../interfaces/Iblog";
+import instance from "../../instance/instance";
 
 const HomePage = () => {
   const sliderRef = useRef<Slider>(null);
   const { products } = useContext(ProductContext);
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await instance.get("/blogs");
+      setBlogs(data.data);
+    })();
+  }, []);
   const next = () => {
     if (sliderRef.current) {
       sliderRef.current.slickNext();
@@ -122,13 +131,17 @@ const HomePage = () => {
             </h3>
           </div>
           <div className="w-full relative pt-10 group">
-            <Slider {...settings} ref={sliderRef} className={`w-full`}>
+            <Slider
+              {...settings}
+              ref={sliderRef}
+              className={`w-full flex items-stretch`}
+            >
               {products &&
                 products.length > 0 &&
                 products.map((pro) => {
                   if (pro.price_discount !== 0) {
                     return (
-                      <div className="rounded-xl">
+                      <div className="rounded-xl" key={pro._id}>
                         <ProductDiscount product={pro} />
                       </div>
                     );
@@ -207,12 +220,12 @@ const HomePage = () => {
             List Products
           </h3>
         </div>
-        <div className="grid lg:grid-cols-5 grid-cols-2 md:grid-cols-4 lg:gap-10 gap-3 mt-10">
+        <div className="grid lg:grid-cols-5 grid-cols-2 md:grid-cols-4 lg:gap-5 gap-3 mt-10">
           {products &&
             products.length > 0 &&
-            products.map((pro) => {
+            products.slice(0, 9).map((pro) => {
               if (pro.price_discount == 0) {
-                return <ProductList product={pro} />;
+                return <ProductList key={pro._id} product={pro} />;
               }
             })}
         </div>
@@ -227,10 +240,10 @@ const HomePage = () => {
           </h3>
         </div>
         <div className="grid grid-cols-4 gap-10 py-5">
-          <BlogHome />
-          <BlogHome />
-          <BlogHome />
-          <BlogHome />
+          {blogs &&
+            blogs
+              .slice(0, 4)
+              .map((blog, index) => <BlogHome key={index} blog={blog} />)}
         </div>
       </section>
     </div>

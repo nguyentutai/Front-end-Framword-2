@@ -9,9 +9,29 @@ const OrderModel = new mongoose.Schema(
     },
     totalPrice: {
       type: Number,
+    },
+    name_shopping: {
+      type: String,
+    },
+    address_shopping: {
+      type: String,
+    },
+    phone_shopping: {
+      type: String,
+    },
+    subtotalPrice: {
+      type: Number,
       required: true,
     },
-    productId: [{ type: mongoose.Types.ObjectId, ref: "products" }],
+    productItem: [
+      {
+        productId: {
+          type: mongoose.Types.ObjectId,
+          ref: "products",
+        },
+        quantity: Number,
+      },
+    ],
     status: {
       type: String,
       enum: ["pending", "processing", "completed", "cancelled"],
