@@ -4,11 +4,11 @@ import { IProduct } from "../../interfaces/IProduct";
 export default function ProductList2({ product }: { product: IProduct }) {
   return (
     <div className="overflow-hidden flex gap-10 px-10 group shadow-catelist rounded-lg py-2 dark:bg-util">
-      <div className="max-w-[200px] relative rounded-xl overflow-hidden">
+      <div className="max-w-[200px] min-w-44 flex justify-center relative rounded-xl overflow-hidden">
         <img
           src={product.images[0]}
           alt="First"
-          className="w-full h-full object-cover  transition-opacity duration-300 hover:opacity-0"
+          className="w-full h-full object-cover transition-opacity duration-300 hover:opacity-0"
         />
         <img
           src={product.images[1]}

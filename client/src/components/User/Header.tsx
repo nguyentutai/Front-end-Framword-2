@@ -2,12 +2,16 @@ import { useContext, useEffect, useState } from "react";
 import { Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import { CategorysContext } from "../../context/CategoryContext";
 import { useAuth } from "../../context/AuthContext";
-import { Button, Drawer } from "flowbite-react";
-
+import { Drawer } from "flowbite-react";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { useForm } from "react-hook-form";
+import { User } from "../../interfaces/IUser";
+import UploadCoudiary from "../../utils/Cloudiary";
+import { toast } from "react-toastify";
+import instance from "../../instance/instance";
 const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
   const { categorys } = useContext(CategorysContext);
@@ -17,6 +21,10 @@ const Header = () => {
   const open = Boolean(anchorEl);
   const [isOpens, setIsOpens] = useState(false);
   const handleCloses = () => setIsOpens(false);
+  const [count, setCount] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -34,10 +42,38 @@ const Header = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
+  useEffect(() => {
+    setTotalPrice(count < 1 ? 199 : count * 199);
+  }, [count]);
+
+  const handleImageUpload = (event: any) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImageUrl(imageUrl);
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<User>();
+
+  const onSubmit = async (data: User) => {
+    // try {
+    //   if (data && data.avatar[0]) {
+    //     const thumbnailUrl = await UploadCoudiary(data.avatar[0]);
+    //     const data = await instance.put('/user/profile/' + );
+    //   }
+    // } catch (error: any) {
+    //   console.log(error);
+    // }
+  };
 
   return (
     <>
-      <div className="bg-[#1C2329] py-1.5 lg:block hidden">
+      <div className="bg-[#161718] py-1.5 lg:block hidden">
         <section className="container-main flex justify-between items-center">
           <div>
             <ul className="*:text-white *:text-[13px] flex gap-4 *:cursor-pointer">
@@ -179,86 +215,30 @@ const Header = () => {
                   onClose={handleClose}
                   TransitionComponent={Fade}
                 >
-                  <div className="pb-1 border-b">
-                    <MenuItem>
-                      <div className="flex items-center gap-5">
-                        <div className="max-w-[60px]">
-                          <img
-                            className="w-full"
-                            src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15-210x210.jpg"
-                            alt=""
-                          />
-                        </div>
-                        <div>
-                          <h3 className="text-xs font-semibold">Sản phẩm 1</h3>
-                          <span className="text-xs font-bold">1 x $199.0</span>
-                        </div>
-                        <div className="hover:text-red-600">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-4"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6 18 18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </MenuItem>
-                    <MenuItem>
-                      <div className="flex items-center gap-5">
-                        <div className="max-w-[60px]">
-                          <img
-                            className="w-full"
-                            src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15-210x210.jpg"
-                            alt=""
-                          />
-                        </div>
-                        <div>
-                          <h3 className="text-xs font-semibold">Sản phẩm 1</h3>
-                          <span className="text-xs font-bold">1 x $199.0</span>
-                        </div>
-                        <div className="hover:text-red-600">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-4"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6 18 18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </MenuItem>
-                  </div>
-                  <div className="flex justify-between px-4 py-2">
+                  <div className="px-3">
                     <div>
-                      <span className="text-xs font-medium">Subtotal:</span>
+                      <button
+                        onClick={() => setOpenModal(true)}
+                        className="text-sm hover:text-primary duration-300"
+                      >
+                        Chỉnh sửa thông tin
+                      </button>
+                    </div>
+                    <div className="py-2">
+                      <Link
+                        className="text-sm  hover:text-primary duration-300"
+                        to={""}
+                      >
+                        Lịch sử đơn hàng
+                      </Link>
                     </div>
                     <div>
-                      <span className="text-xs font-bold">$199.0</span>
-                    </div>
-                  </div>
-                  <div className="px-5 py-2">
-                    <div className="w-full border rounded-xl text-center cursor-pointer hover:bg-primary duration-300 hover:text-white py-2">
-                      <p className="text-xs font-bold">View Card</p>
-                    </div>
-                  </div>
-                  <div className="px-5">
-                    <div className="w-full border rounded-xl bg-primary text-center cursor-pointer text-white hover:text-black duration-300 hover:opacity-90 py-2">
-                      <p className="text-xs font-bold">Checkout</p>
+                      <Link
+                        className="text-sm hover:text-primary duration-300"
+                        to={""}
+                      >
+                        Đăng xuất
+                      </Link>
                     </div>
                   </div>
                 </Menu>
@@ -358,7 +338,7 @@ const Header = () => {
                                   return (
                                     <Link
                                       className="hover:bg-slate-200 block"
-                                      to={"/category/" + cate.slug}
+                                      to={"/products/" + cate.slug}
                                     >
                                       {cate.name}
                                     </Link>
@@ -429,8 +409,8 @@ const Header = () => {
           </div>
           <Drawer.Items>
             <div className="flex-col gap-4">
-              <div className="flex items-center shadow justify-around gap-6 rounded-lg ">
-                <div className="max-w-[100px]">
+              <div className="flex items-center shadow justify-around gap-6 my-3 dark:bg-util rounded-lg ">
+                <div className="max-w-[80px]">
                   <img
                     className="w-full"
                     src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15-210x210.jpg"
@@ -439,7 +419,28 @@ const Header = () => {
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold pb-3">Sản phẩm 1</h3>
-                  <span className="text-xs font-bold">1 x $199.0</span>
+                  <div>
+                    <div className="text-xs font-bold">
+                      <button
+                        className="px-2 text-xs bg-slate-200 rounded-sm"
+                        onClick={() => setCount(count - 1)}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        className="border-none outline-none focus:border-none w-6 px-2 text-[10px] h-2"
+                        value={count < 1 ? "1" : count}
+                      />
+                      <button
+                        className="px-2 text-xs bg-slate-200 rounded-sm"
+                        onClick={() => setCount(count + 1)}
+                      >
+                        +
+                      </button>
+                    </div>{" "}
+                    <span className="text-xs font-bold">${totalPrice}.0</span>
+                  </div>
                 </div>
                 <div className="hover:text-red-600 cursor-pointer">
                   <svg
@@ -457,6 +458,14 @@ const Header = () => {
                     />
                   </svg>
                 </div>
+              </div>
+            </div>
+            <div className="flex justify-between px-4 pt-3 pb-5  dark:text-util">
+              <div>
+                <span className="text-xs font-medium">Subtotal:</span>
+              </div>
+              <div>
+                <span className="text-xs font-bold">$199.0</span>
               </div>
             </div>
             <div className="w-full">
@@ -490,6 +499,92 @@ const Header = () => {
             </div>
           </Drawer.Items>
         </Drawer>
+        {/* Popup profile */}
+        <Modal
+          show={openModal}
+          size="md"
+          popup
+          onClose={() => setOpenModal(false)}
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                Chỉnh sửa thông tin
+              </h3>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="name" value="Your name" />
+                </div>
+                <TextInput
+                  id="name"
+                  {...register("username")}
+                  placeholder="Tên tài khoản"
+                />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="address" value="Your address" />
+                </div>
+                <TextInput
+                  id="address"
+                  type="text"
+                  {...register("address")}
+                  placeholder="exam: Số 1/Đống Đa/Hà Nội"
+                />
+              </div>
+              <div className="flex items-center gap-16">
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="address"
+                    value="Your Image"
+                    className="pb-3 block"
+                  />
+                  <label
+                    htmlFor="image-file"
+                    className="bg-primary block w-fit rounded-full ms-3 p-2 cursor-pointer"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6 text-util font-bold"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+                      />
+                    </svg>
+                  </label>
+                </div>
+                <div className="rounded-full p-2 shadow">
+                  <TextInput
+                    id="image-file"
+                    type="file"
+                    {...register("avatar")}
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  {imageUrl && (
+                    <div className="max-w-24">
+                      <img
+                        className="w-full rounded-full"
+                        src={imageUrl}
+                        alt=""
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="w-full">
+                <Button type="submit">Submit</Button>
+              </div>
+            </form>
+          </Modal.Body>
+        </Modal>
       </header>
     </>
   );
