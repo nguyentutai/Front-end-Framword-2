@@ -288,7 +288,7 @@ const ProductsAdmin = () => {
                 <div className="space-y-3.5 w-full">
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="name-category"
+                      htmlFor="name-product"
                       className="font-medium text-sm"
                     >
                       Tên sản phẩm
@@ -398,6 +398,7 @@ const ProductsAdmin = () => {
                       <FileInput
                         id="dropzone-file"
                         className="hidden"
+                        sizing={'sm'}
                         multiple
                         {...register("images", {
                           onChange(event) {
@@ -485,6 +486,7 @@ const ProductsAdmin = () => {
                       checked={statusProduct}
                       {...register("status")}
                       className="my-7"
+                      sizing={'sm'}
                       onChange={setStatus}
                     />
                   </div>
@@ -545,6 +547,7 @@ const ProductsAdmin = () => {
                       <ToggleSwitch
                         checked={product.status}
                         className="mx-auto"
+                        sizing={'sm'}
                         onChange={() => {
                           setStatus(!product.status);
                           handleUpdateStatusProduct(

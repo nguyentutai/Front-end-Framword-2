@@ -248,6 +248,7 @@ const CategorysAdmin = () => {
                   <ToggleSwitch
                     label="Trạng thái"
                     checked={status}
+                    sizing={'sm'}
                     {...register("status")}
                     onChange={setStatus}
                     className="my-8"
@@ -300,6 +301,7 @@ const CategorysAdmin = () => {
                       <Table.Cell>{category.slug}</Table.Cell>
                       <Table.Cell>
                         <ToggleSwitch
+                          sizing={"sm"}
                           checked={category.status}
                           onChange={() => {
                             setStatus(!category.status);
