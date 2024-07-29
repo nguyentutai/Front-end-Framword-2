@@ -234,7 +234,8 @@ class ProductController {
       // B2: Bỏ qua các sản phẩm ở trang trước đó
       const data = await productSchema
         .find({})
-        .populate("categoryId", "name").sort({createdAt: -1})
+        .populate("categoryId", "name")
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .exec();

@@ -67,7 +67,7 @@ const BlogsAdmin = () => {
   );
   const parser = new DOMParser();
   const doc = parser.parseFromString(content, "text/html");
-  const {dispatch}=useContext(BlogContext)
+  const { dispatch } = useContext(BlogContext);
   const { handleSubmit } = useForm<IBlog>();
   const onSubmit = async () => {
     try {
@@ -105,18 +105,18 @@ const BlogsAdmin = () => {
         content: contentNew,
         slug: slugify(titleSlugBlog),
         status: statusBlog,
-        userId: "66a0f4fafa296beeb591cddb",
+        userId: "66a3a22d5517de3876cd3231",
       });
       if (data) {
         setActive(false);
       }
       toast.success(data.message);
-      setValue(0)
-      setContent("")
+      setValue(0);
+      setContent("");
       dispatch({
-        type:"ADD",
-        payload:data.data
-      })
+        type: "ADD",
+        payload: data.data,
+      });
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -133,7 +133,7 @@ const BlogsAdmin = () => {
     }
   }, [content]);
   return (
-    <Box sx={{width: 'full'}}>
+    <Box sx={{ width: "full" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -171,6 +171,7 @@ const BlogsAdmin = () => {
                 checked={statusBlog}
                 className="my-7"
                 onChange={setStatusBlog}
+                sizing={'sm'}
               />
             </div>
             <ButtonSubmit content="Thêm bài viết" />

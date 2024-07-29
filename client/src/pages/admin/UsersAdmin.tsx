@@ -112,6 +112,7 @@ const UsersAdmin = () => {
                 <Table.Cell>
                   <ToggleSwitch
                     checked={user.status}
+                    sizing={'sm'}
                     className="w-fit mx-auto"
                     onChange={()=>{
                       setStautsUser(!user.status)

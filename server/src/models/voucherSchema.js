@@ -6,9 +6,6 @@ const VoucherModel = new mongoose.Schema(
       type: String,
       required: true,
     },
-    time_end: {
-      type: Date,
-    },
     status: {
       type: Boolean,
       default: true,

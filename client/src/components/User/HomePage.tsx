@@ -1,6 +1,6 @@
 import Banner from "./Banner";
 import Slider from "react-slick";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Button from "./Button";
@@ -9,10 +9,19 @@ import ProductList from "./ProductList";
 import ViewAll from "./ViewAll";
 import BlogHome from "./BlogHome";
 import { ProductContext } from "../../context/ProductContext";
+import { IBlog } from "../../interfaces/Iblog";
+import instance from "../../instance/instance";
 
 const HomePage = () => {
   const sliderRef = useRef<Slider>(null);
   const { products } = useContext(ProductContext);
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await instance.get("/blogs");
+      setBlogs(data.data);
+    })();
+  }, []);
   const next = () => {
     if (sliderRef.current) {
       sliderRef.current.slickNext();
@@ -231,10 +240,10 @@ const HomePage = () => {
           </h3>
         </div>
         <div className="grid grid-cols-4 gap-10 py-5">
-          <BlogHome />
-          <BlogHome />
-          <BlogHome />
-          <BlogHome />
+          {blogs &&
+            blogs
+              .slice(0, 4)
+              .map((blog, index) => <BlogHome key={index} blog={blog} />)}
         </div>
       </section>
     </div>

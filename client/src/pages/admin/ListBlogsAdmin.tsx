@@ -19,35 +19,35 @@ const ListBlogsAdmin = () => {
     })();
   }, []);
 
-  const handleRemoveBlo=async(id:string)=>{
+  const handleRemoveBlo = async (id: string) => {
     try {
-        await instance.delete(`blogs/${id}`)
-        dispatch({
-            type:"DELETE",
-            payload:id
-        })
-    } catch (error) {
-      toast.error(error.response.data.message)
-    }
-  }
-  const handleUpdateStatusBlog= async (id:string,statusBlog:boolean)=>{
-    try {
-      const {data}=await instance.patch(`blogs/${id}`,{
-        status:statusBlog
-      })
+      await instance.delete(`blogs/${id}`);
       dispatch({
-        type:"UPDATE",
-        payload:data.data
-      })
+        type: "DELETE",
+        payload: id,
+      });
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+  const handleUpdateStatusBlog = async (id: string, statusBlog: boolean) => {
+    try {
+      const { data } = await instance.patch(`blogs/${id}`, {
+        status: statusBlog,
+      });
+      dispatch({
+        type: "UPDATE",
+        payload: data.data,
+      });
       if (statusBlog) {
-        toast.success('Public')
-      }else{
-        toast.warning('Private')
+        toast.success("Public");
+      } else {
+        toast.warning("Private");
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     }
-  }
+  };
   return (
     <div className="overflow-x-auto w-full">
       <Table hoverable className="table w-full">
@@ -70,15 +70,16 @@ const ListBlogsAdmin = () => {
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {blog.slug}
                 </Table.Cell>
-                <Table.Cell>{blog.userId.username}</Table.Cell>
+                <Table.Cell>{blog?.userId?.username}</Table.Cell>
                 <Table.Cell>{blog.createdAt}</Table.Cell>
                 <Table.Cell>
                   <ToggleSwitch
                     checked={blog.status}
+                    sizing={'sm'}
                     className="w-fit mx-auto"
-                    onChange={()=>{
-                      setStatus(!blog.status)
-                      handleUpdateStatusBlog(blog._id!,!blog.status)
+                    onChange={() => {
+                      setStatus(!blog.status);
+                      handleUpdateStatusBlog(blog._id!, !blog.status);
                     }}
                   />
                 </Table.Cell>
@@ -86,22 +87,22 @@ const ListBlogsAdmin = () => {
                   <div className="flex justify-center gap-2">
                     <button
                       className="bg-util shadow py-1.5 px-3 rounded-md"
-                        onClick={() => {
-                          swal({
-                            title: "Bạn có muốn xóa bài viết này ?",
-                            text: "Sau khi xóa sẽ không thể không phục !",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                          }).then((willDelete) => {
-                            if (willDelete) {
-                                handleRemoveBlo(blog._id!);
-                              swal("Xóa bài viết thành công !", {
-                                icon: "success",
-                              });
-                            }
-                          });
-                        }}
+                      onClick={() => {
+                        swal({
+                          title: "Bạn có muốn xóa bài viết này ?",
+                          text: "Sau khi xóa sẽ không thể không phục !",
+                          icon: "warning",
+                          buttons: true,
+                          dangerMode: true,
+                        }).then((willDelete) => {
+                          if (willDelete) {
+                            handleRemoveBlo(blog._id!);
+                            swal("Xóa bài viết thành công !", {
+                              icon: "success",
+                            });
+                          }
+                        });
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +119,8 @@ const ListBlogsAdmin = () => {
                         />
                       </svg>
                     </button>
-                    <Link to={`${blog._id}`}
+                    <Link
+                      to={`${blog._id}`}
                       className="bg-util shadow py-1.5 px-3 rounded-md"
                     >
                       <svg

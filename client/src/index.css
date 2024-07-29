@@ -55,6 +55,9 @@
   background-color: #1b95f2;
   color: white;
 }
+.active:hover {
+  background-color: #1b95f2 !important;
+}
 .focus\:ring-cyan-300:focus {
   --tw-ring-opacity: 0 !important;
 }
