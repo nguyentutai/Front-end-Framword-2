@@ -8,23 +8,58 @@ import { useAuth } from "../../context/AuthContext";
 import { Drawer } from "flowbite-react";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { useForm } from "react-hook-form";
-import { User } from "../../interfaces/IUser";
 import UploadCoudiary from "../../utils/Cloudiary";
-import { toast } from "react-toastify";
+import { Upload } from "antd";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import ImgCrop from "antd-img-crop";
+import { IUser } from "../../interfaces/IUser";
 import instance from "../../instance/instance";
+import { toast } from "react-toastify";
+import Avatar from "@mui/material/Avatar";
+import { useCart } from "../../context/CartContext";
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+function stringToColor(string: string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name: string) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+  };
+}
+
 const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
   const { categorys } = useContext(CategorysContext);
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, updateProfile, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [isOpens, setIsOpens] = useState(false);
   const handleCloses = () => setIsOpens(false);
-  const [count, setCount] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>("");
+  // Lấy thông tin giỏ hàng
+  const { cart, dispatch } = useCart();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -42,33 +77,98 @@ const Header = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
-  useEffect(() => {
-    setTotalPrice(count < 1 ? 199 : count * 199);
-  }, [count]);
 
-  const handleImageUpload = (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImageUrl(imageUrl);
-    }
+  const { register, handleSubmit, reset } = useForm<IUser>();
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("user") as string);
+    reset(data);
+  }, [localStorage.getItem("user")]);
+
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<User>();
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as FileType);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+  const onSubmit = async (datas: IUser) => {
+    try {
+      if (datas && localStorage.getItem("user")) {
+        const imageUser = await UploadCoudiary(fileList[0]?.thumbUrl);
+        const { data } = await instance.put(`users/profile`, {
+          ...datas,
+          avatar: imageUser,
+        });
+        if (data.data) {
+          updateProfile(data.data);
+          setOpenModal(false);
+          setFileList([]);
+          toast.success("Updated profile Successfully");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    (async () => {
+      if (localStorage.getItem("user")) {
+        const { data } = await instance.get(
+          "cart/" + JSON.parse(localStorage.getItem("user") as string)?._id
+        );
+        console.log(data.data.products);
+        dispatch({
+          type: "LIST_CART",
+          payload: data.data.products,
+        });
+      }
+    })();
+  }, []);
 
-  const onSubmit = async (data: User) => {
-    // try {
-    //   if (data && data.avatar[0]) {
-    //     const thumbnailUrl = await UploadCoudiary(data.avatar[0]);
-    //     const data = await instance.put('/user/profile/' + );
-    //   }
-    // } catch (error: any) {
-    //   console.log(error);
-    // }
+  // total Price
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    const total = cart.products.reduce((acc: number, item: any) => {
+      return acc + item.quantity * item.productId.price;
+    }, 0);
+    setTotalPrice(total);
+  }, [cart]);
+  // Logout
+  const handleLogout = () => {
+    logout();
+    handleClose();
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      if (localStorage.getItem("user")) {
+        const data = await instance.put(
+          `cart/${JSON.parse(localStorage.getItem("user") as string)._id}/${id}`
+        );
+        if (data.data) {
+          dispatch({
+            type: "DELETE_PRODUCT_CART",
+            payload: id,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -202,7 +302,7 @@ const Header = () => {
                   </svg>
                   <p className="lg:block hidden text-sm">My Cart</p>
                   <p className="absolute top-1 -left-2 bg-red-600 rounded-full w-4 h-4 text-center text-white text-xs leading-4">
-                    0
+                    {cart?.products?.length}
                   </p>
                 </button>
                 <Menu
@@ -233,31 +333,36 @@ const Header = () => {
                       </Link>
                     </div>
                     <div>
-                      <Link
+                      <div
+                        onClick={handleLogout}
                         className="text-sm hover:text-primary duration-300"
-                        to={""}
                       >
                         Đăng xuất
-                      </Link>
+                      </div>
                     </div>
                   </div>
                 </Menu>
                 {user && user ? (
                   <div
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-4"
                     aria-controls={open ? "fade-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
                     onClick={handleClick}
                   >
-                    <div className="max-w-6 rounded-full border p-0.5 dark:bg-util">
-                      <img
-                        src={
-                          user.avatar ||
-                          "https://res.cloudinary.com/drz5kdrm5/image/upload/v1722003900/th-removebg-preview_qy0spz.png"
-                        }
-                        alt=""
-                      />
+                    <div className="max-w-6 rounded-full p-0.5 dark:bg-util">
+                      {user.avatar ? (
+                        <img
+                          className="rounded-full"
+                          src={user.avatar}
+                          alt=""
+                        />
+                      ) : (
+                        <Avatar
+                          className="!w-8 !h-8 !p-2"
+                          {...stringAvatar(user.username)}
+                        />
+                      )}
                     </div>
                     <span className="text-sm font-semibold dark:text-util">
                       {user.username}
@@ -337,6 +442,7 @@ const Header = () => {
                                 if (cate.status == true) {
                                   return (
                                     <Link
+                                      key={cate._id}
                                       className="hover:bg-slate-200 block"
                                       to={"/products/" + cate.slug}
                                     >
@@ -409,63 +515,91 @@ const Header = () => {
           </div>
           <Drawer.Items>
             <div className="flex-col gap-4">
-              <div className="flex items-center shadow justify-around gap-6 my-3 dark:bg-util rounded-lg ">
-                <div className="max-w-[80px]">
-                  <img
-                    className="w-full"
-                    src="https://hex-wp.com/gamemart/wp-content/uploads/2024/03/hard_image_15-210x210.jpg"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <h3 className="text-xs font-semibold pb-3">Sản phẩm 1</h3>
-                  <div>
-                    <div className="text-xs font-bold">
-                      <button
-                        className="px-2 text-xs bg-slate-200 rounded-sm"
-                        onClick={() => setCount(count - 1)}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        className="border-none outline-none focus:border-none w-6 px-2 text-[10px] h-2"
-                        value={count < 1 ? "1" : count}
-                      />
-                      <button
-                        className="px-2 text-xs bg-slate-200 rounded-sm"
-                        onClick={() => setCount(count + 1)}
-                      >
-                        +
-                      </button>
-                    </div>{" "}
-                    <span className="text-xs font-bold">${totalPrice}.0</span>
-                  </div>
-                </div>
-                <div className="hover:text-red-600 cursor-pointer">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-4"
+              {cart && cart.products ? (
+                cart.products.map((pro: any, index: string) => (
+                  <div
+                    key={index}
+                    className="flex items-center shadow justify-around gap-6 my-3 dark:bg-util py-2 rounded-lg "
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18 18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              </div>
+                    <div className="max-w-[80px] min-w-[80px] p-2">
+                      <img
+                        className="w-full"
+                        src={pro?.productId?.images[0]}
+                        alt=""
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-semibold pb-3 max-w-[130px] line-clamp-2">
+                        {pro?.productId?.name}
+                      </h3>
+                      <div className="py-2">
+                        <div className="text-xs font-bold">
+                          <button
+                            className="px-2 text-xs bg-slate-200 rounded-sm"
+                            onClick={() =>
+                              dispatch({
+                                type: "UPDATE_COUNT_PRODUCT_DECREASE",
+                                payload: pro._id,
+                              })
+                            }
+                          >
+                            -
+                          </button>
+                          <input
+                            type="text"
+                            className="border-none outline-none focus:border-none w-6 px-2 text-[10px] h-2"
+                            value={pro.quantity}
+                          />
+                          <button
+                            className="px-2 text-xs bg-slate-200 rounded-sm"
+                            onClick={() =>
+                              dispatch({
+                                type: "UPDATE_COUNT_PRODUCT_INCREASE",
+                                payload: pro._id,
+                              })
+                            }
+                          >
+                            +
+                          </button>
+                        </div>{" "}
+                        <span className="text-xs font-bold">
+                          ${pro.productId.price * pro.quantity}.0
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className="hover:text-red-600 cursor-pointer"
+                      onClick={() => handleDelete(pro.productId._id)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18 18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div>Không có sản phẩm nào</div>
+              )}
             </div>
             <div className="flex justify-between px-4 pt-3 pb-5  dark:text-util">
               <div>
                 <span className="text-xs font-medium">Subtotal:</span>
               </div>
               <div>
-                <span className="text-xs font-bold">$199.0</span>
+                <span className="text-xs font-bold">
+                  ${totalPrice.toFixed(1)}
+                </span>
               </div>
             </div>
             <div className="w-full">
@@ -514,13 +648,19 @@ const Header = () => {
               </h3>
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="name" value="Your name" />
+                  <Label htmlFor="name" value="Your username" />
                 </div>
                 <TextInput
                   id="name"
                   {...register("username")}
                   placeholder="Tên tài khoản"
                 />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="name" value="Your name" />
+                </div>
+                <TextInput id="name" {...register("name")} placeholder="Tên" />
               </div>
               <div>
                 <div className="mb-2 block">
@@ -533,50 +673,42 @@ const Header = () => {
                   placeholder="exam: Số 1/Đống Đa/Hà Nội"
                 />
               </div>
-              <div className="flex items-center gap-16">
+              <div className=" gap-16">
                 <div className="mb-2 block">
                   <Label
                     htmlFor="address"
                     value="Your Image"
                     className="pb-3 block"
                   />
-                  <label
-                    htmlFor="image-file"
-                    className="bg-primary block w-fit rounded-full ms-3 p-2 cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6 text-util font-bold"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-                      />
-                    </svg>
-                  </label>
                 </div>
-                <div className="rounded-full p-2 shadow">
-                  <TextInput
-                    id="image-file"
-                    type="file"
-                    {...register("avatar")}
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  {imageUrl && (
-                    <div className="max-w-24">
-                      <img
-                        className="w-full rounded-full"
-                        src={imageUrl}
-                        alt=""
-                      />
-                    </div>
-                  )}
+                <div className="flex gap-4">
+                  <ImgCrop rotationSlider>
+                    <Upload
+                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                      listType="picture-card"
+                      fileList={fileList}
+                      onChange={onChange}
+                      onPreview={onPreview}
+                    >
+                      {fileList.length < 1 && "+ Upload"}
+                    </Upload>
+                  </ImgCrop>
+                  {JSON.parse(localStorage.getItem("user") as string)?.avatar &&
+                    fileList.length == 0 && (
+                      <div>
+                        <img
+                          className="w-24 rounded-md"
+                          src={
+                            JSON.parse(localStorage.getItem("user") as string)
+                              .avatar
+                          }
+                          alt=""
+                        />
+                      </div>
+                    )}
+                  <div>
+                    <img src="" alt="" />
+                  </div>
                 </div>
               </div>
               <div className="w-full">

@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 import userSchema from "../models/userSchema.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const checkAuth = async (req, res, next) => {
   try {
@@ -11,13 +13,13 @@ export const checkAuth = async (req, res, next) => {
       });
     }
     // Kiểm tra xem token đó có chính xác không
-    const decode = jwt.verify(token);
+    const decode = jwt.verify(token, process.env.JWT_TOKEN);
     if (!decode) {
       return res.status(400).json({
         message: "Bạn không có quyền truy cập",
       });
     }
-    const user = await userSchema.findById(decode._id);
+    const user = await userSchema.findById(decode.id);
     // Đẩy dữ liệu lên response
     req.user = user;
     next();

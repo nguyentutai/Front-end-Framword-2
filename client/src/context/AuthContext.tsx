@@ -6,6 +6,7 @@ export interface AuthContextType {
   user: IUser | null;
   login: (token: string, user: IUser) => void;
   logout: () => void;
+  updateProfile: (user: IUser) => void;
   isAdmin: boolean;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -41,12 +42,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     setUser(null);
-    nav("/login");
+  };
+
+  const updateProfile = (user: IUser) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAdmin: user?.role === "admin" }}
+      value={{
+        user,
+        login,
+        logout,
+        updateProfile,
+        isAdmin: user?.role === "admin",
+      }}
     >
       {children}
     </AuthContext.Provider>
