@@ -75,6 +75,7 @@ const ListBlogsAdmin = () => {
                 <Table.Cell>
                   <ToggleSwitch
                     checked={blog.status}
+                    sizing={'sm'}
                     className="w-fit mx-auto"
                     onChange={()=>{
                       setStatus(!blog.status)
