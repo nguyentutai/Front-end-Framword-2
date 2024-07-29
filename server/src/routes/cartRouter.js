@@ -13,6 +13,7 @@ cartRouter.put("/:userId/:idPro", CartModel.deleteProductCart);
 // Thêm giỏ hàng
 cartRouter.post("/", CartModel.addProductToCart);
 // Sửa giỏ hàng
-cartRouter.put("/:cartId", CartModel.updateCart);
-
+cartRouter.put("/:userId", CartModel.updateCart);
+// Xóa giỏ hàng khi người dùng đặt hàng thành công
+cartRouter.delete("/:id", CartModel.deleteCart);
 export default cartRouter;

@@ -25,7 +25,7 @@ const CategorysProvider = (props: Props) => {
           type: "LIST",
           payload: data.data,
         });
-      } catch (error) {
+      } catch (error: any) {
         toast.error(`Lỗi ${error.response.data.message}`);
       }
     })();
