@@ -130,7 +130,6 @@ const Header = () => {
         const { data } = await instance.get(
           "cart/" + JSON.parse(localStorage.getItem("user") as string)?._id
         );
-        console.log(data.data.products);
         dispatch({
           type: "LIST_CART",
           payload: data.data.products,
@@ -170,6 +169,21 @@ const Header = () => {
       console.log(error);
     }
   };
+
+  // const updateCart = async () => {
+  //   try {
+  //     if (cart.products && localStorage.getItem("user")) {
+  //       await instance.put(
+  //         `cart/${JSON.parse(localStorage.getItem("user") as string)._id}`,
+  //         {
+  //           products: cart.products,
+  //         }
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
@@ -604,13 +618,8 @@ const Header = () => {
             </div>
             <div className="w-full">
               <Link
-                to={""}
-                className="rounded-lg block border border-gray-200 bg-white px-4 py-2 text-center w-full text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-cyan-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-              >
-                View Cart
-              </Link>
-              <Link
-                to={""}
+                to={"/order"}
+                onClick={() => setIsOpens(false)}
                 className="inline-flex justify-center mt-3 w-full items-center rounded-lg bg-cyan-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
               >
                 Checking&nbsp;

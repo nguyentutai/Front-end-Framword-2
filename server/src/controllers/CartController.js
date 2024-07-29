@@ -89,10 +89,10 @@ class CartController {
   }
   async updateCart(req, res) {
     const { products } = req.body;
-    const { cartId } = req.params;
+    const { userId } = req.params;
     try {
       // Tìm giỏ hàng theo cartId
-      let cart = await cartSchema.findById(cartId);
+      let cart = await cartSchema.findOne({ userId: userId });
 
       if (cart) {
         // Cập nhật giỏ hàng với sản phẩm mới
@@ -100,7 +100,7 @@ class CartController {
         await cart.save();
         return res
           .status(200)
-          .json({ message: "Cart updated successfully", cart });
+          .json({ message: "Cart updated successfully", data: cart });
       } else {
         return res.status(404).json({ message: "Cart not found" });
       }
@@ -130,6 +130,18 @@ class CartController {
         message: "Delete Product Cart Successfull",
         data: updateCart,
       });
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+  async deleteCart(req,res) {
+    try {
+      const data = await cartSchema.findByIdAndDelete(req.params.id);
+      if(data){
+        return res.status(200).json({
+          message: "Delete Cart Successfull",
+        })
+      }
     } catch (error) {
       return res.status(400).send(error.message);
     }
