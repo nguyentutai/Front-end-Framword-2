@@ -15,7 +15,7 @@ const Header = () => {
   const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [isOpens, setIsOpens] = useState(true);
+  const [isOpens, setIsOpens] = useState(false);
   const handleCloses = () => setIsOpens(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
