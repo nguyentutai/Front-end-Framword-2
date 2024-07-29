@@ -1,7 +1,44 @@
 import Rating from "@mui/material/Rating";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IProduct } from "../../interfaces/IProduct";
+import { useCart } from "../../context/CartContext";
+import instance from "../../instance/instance";
+import { toast } from "react-toastify";
 const ProductDiscount = ({ product }: { product: IProduct }) => {
+  const { dispatch } = useCart();
+  const nav = useNavigate();
+  const hanldeAddToCart = async () => {
+    try {
+      if (localStorage.getItem("user")) {
+        const data = await instance.post("/cart", {
+          productId: product._id,
+          quantity: 1,
+          userId: JSON.parse(localStorage.getItem("user") as string)?._id,
+        });
+        if (data) {
+          dispatch({
+            type: "ADD_PRODUCT_TO_CART",
+            payload: {
+              productId: {
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                price_discount: product.price_discount,
+                images: product.images,
+              },
+              quantity: 1,
+            },
+          });
+          toast.success("Thêm giỏ hàng thành công");
+        }
+      } else {
+        toast.warning("Vui lòng đăng nhập để mua hàng");
+        nav("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="rounded-2xl bg-white shadow-lg grid grid-cols-2 p-4 gap-3 relative m-2">
       <div className="max-w-[200px] min-h-[200px] relative">
@@ -17,7 +54,7 @@ const ProductDiscount = ({ product }: { product: IProduct }) => {
         />
       </div>
       <div>
-        <h3 className="text-base">{product.name}</h3>
+        <h3 className="text-base line-clamp-2">{product.name}</h3>
         <div className="py-3">
           <Rating
             name="disabled"
@@ -30,7 +67,10 @@ const ProductDiscount = ({ product }: { product: IProduct }) => {
           <p className="line-through text-sm">${product.price}.0</p>
         </div>
         <div className="flex gap-2 pt-4">
-          <button className="bg-primary rounded-2xl py-2 px-3 text-xs text-white opacity-70 font-medium hover:opacity-100">
+          <button
+            onClick={hanldeAddToCart}
+            className="bg-primary rounded-2xl py-2 px-3 text-xs text-white opacity-70 font-medium hover:opacity-100"
+          >
             Add to Card
           </button>
           <Link
