@@ -25,7 +25,9 @@ import ProductList from "./components/User/ProductListPage.tsx";
 import ScrollToTop from "./utils/ScrollTop.tsx";
 import NewsPage from "./components/User/NewsPage.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
-
+import Order from "./components/Cart/Order.tsx";
+import Pay from "./components/Cart/Pay.tsx";
+import Cart from "./components/Cart/Cart.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -41,6 +43,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <Route element={<LayoutUser />}>
                       <Route index element={<HomePage />} />
                       <Route path="blogs" element={<BlogPage />} />
+                      <Route path="order" element={<Order/>}/>
+                      <Route path="pay" element={<Pay/>}/>
+                      <Route path="cart" element={<Cart/>}/>
                       <Route path="news" element={<NewsPage />} />
                       <Route path="detail/:slug" element={<DetailProduct />} />
                       <Route path="products" element={<ProductList />} />
