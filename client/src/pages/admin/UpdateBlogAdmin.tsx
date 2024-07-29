@@ -128,6 +128,7 @@ const UpdateBlogAdmin = () => {
             checked={statusBlog}
             className="my-7"
             onChange={setStatusBlog}
+            sizing={'sm'}
           />
         </div>
         <ButtonSubmit content="Sửa bài viết" />

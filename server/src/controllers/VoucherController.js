@@ -1,11 +1,9 @@
-import categorySchema from "../models/categorySchema.js";
-import userSchema from "../models/userSchema.js";
 import voucherSchema from "../models/voucherSchema.js";
 
 class VoucherController {
   async getAllVoucher(req, res) {
     try {
-      const data = await voucherSchema.find();
+      const data = await voucherSchema.find({}).sort({createdAt:-1});
       if (data) {
         return res.status(201).send({
           message: "GetAll Voucher Successfully",
@@ -73,18 +71,27 @@ class VoucherController {
     }
   }
 
+  async updateStatusVoucher(req,res){
+    try {
+      const {status}=req.body
+      const data=await voucherSchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      if (data) {
+        return res.status(200).send({
+          message: "Update Status Voucher Successfully",
+          data,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
   // Xóa cứng
   async removeVoucherById(req, res) {
     try {
       const data = await voucherSchema.findByIdAndDelete(req.params.id);
-      const voucher = await userSchema.updateOne(
-        { _id: data.userId },
-        { $pull: { voucherId: data._id } },
-        { new: true }
-      );
-      if (data && voucher) {
+      if (data) {
         return res.send({
-          status: true,
           message: "Remove Voucher Successfully",
           data: data,
         });

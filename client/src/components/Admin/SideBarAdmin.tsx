@@ -17,7 +17,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"/admin"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -40,7 +40,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"categorys"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -63,7 +63,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"products"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -86,7 +86,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"orders"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -109,7 +109,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"users"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -132,7 +132,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"blogs"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg
@@ -155,7 +155,7 @@ const SideBarAdmin = () => {
           <li>
             <NavLink
               to={"vouchers"}
-              className={"flex px-4 py-2.5 gap-1.5 rounded-md border"}
+              className={"flex px-4 py-2.5 gap-1.5 rounded-md border hover:bg-gray-100"}
               end
             >
               <svg

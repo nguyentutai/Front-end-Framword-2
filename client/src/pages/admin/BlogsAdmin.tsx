@@ -171,6 +171,7 @@ const BlogsAdmin = () => {
                 checked={statusBlog}
                 className="my-7"
                 onChange={setStatusBlog}
+                sizing={'sm'}
               />
             </div>
             <ButtonSubmit content="Thêm bài viết" />
