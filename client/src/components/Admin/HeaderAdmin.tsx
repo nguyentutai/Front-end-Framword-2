@@ -26,7 +26,7 @@ const HeaderAdmin = () => {
   useEffect(() => {
     setLocation(url.pathname.split("/admin")[1])
   }, [url])
-  document.title=`GAME MART | ${location== "" ? "Dashboard" : location?.charAt(1).toUpperCase()}${location?.slice(2)}`
+  document.title=`GAME MART - ADMIN | ${location== "" ? "Dashboard" : location?.charAt(1).toUpperCase()}${location?.slice(2)}`
   return (
     <>
       <header className="shadow py-2 sticky top-0 z-50 bg-util backdrop-blur" id="header-page-admin">
@@ -83,7 +83,7 @@ const HeaderAdmin = () => {
               className="flex gap-3"
               color="inherit"
             >
-              <Avatar alt="andinhle" src="../../../public/images/avatar.jpeg" />
+              <Avatar alt="andinhle" src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-95.jpg" />
               <span className="hidden md:block">andinhle</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

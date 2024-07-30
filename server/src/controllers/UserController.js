@@ -3,7 +3,7 @@ import userSchema from "../models/userSchema.js";
 class UserController {
   async getAllUser(req, res) {
     try {
-      const data = await userSchema.find();
+      const data = await userSchema.find().select("-password");
       if (data) {
         return res.status(201).send({
           message: "GetAll Products Successfully",
@@ -14,14 +14,15 @@ class UserController {
       return res.status(400).send(error.message);
     }
   }
-  
+
   async getUserById(req, res) {
     try {
-      const data = await productSchema
+      const data = await userSchema
         .findById(req.params.id)
+        .select("-password")
         .populate("blogId")
         .populate("commentId")
-        .populate("orderId")
+        // .populate("orderId")
         .populate("voucherId");
       if (data) {
         return res.status(201).send({
@@ -65,7 +66,7 @@ class UserController {
   async updateUser(req, res) {
     try {
       const data = await userSchema.findByIdAndUpdate(
-        `${req.params.id}`,
+        `${req.user._id.toString()}`,
         req.body,
         {
           new: true,
@@ -87,8 +88,25 @@ class UserController {
       return res.status(400).send(error.message);
     }
   }
-
-  /////////
+  //update status user
+  async updateStatusUser(req, res) {
+    try {
+      const { status } = req.body;
+      const data = await userSchema.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
+      if (data) {
+        return res.status(200).send({
+          message: "Update status user successfully !",
+          data,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
 
   // async removeProductById(req, res) {
   //   try {

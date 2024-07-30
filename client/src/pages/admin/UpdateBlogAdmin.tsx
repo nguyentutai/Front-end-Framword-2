@@ -33,6 +33,7 @@ const UpdateBlogAdmin = () => {
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(content, "text/html");
+  
   const { dispatch } = useContext(BlogContext);
   const { handleSubmit } = useForm<IBlog>();
   const onSubmit = async () => {
@@ -76,7 +77,7 @@ const UpdateBlogAdmin = () => {
       }
       toast.success(data.message);
       dispatch({
-        type: "ADD",
+        type: "UPDATE",
         payload: data.data,
       });
       navigate('/admin/blogs')
@@ -127,6 +128,7 @@ const UpdateBlogAdmin = () => {
             checked={statusBlog}
             className="my-7"
             onChange={setStatusBlog}
+            sizing={'sm'}
           />
         </div>
         <ButtonSubmit content="Sửa bài viết" />

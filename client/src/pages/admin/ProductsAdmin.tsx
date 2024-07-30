@@ -16,6 +16,8 @@ import { ProductContext } from "../../context/ProductContext";
 import swal from "sweetalert";
 import Highlighter from "react-highlight-words";
 import ButtonSubmit from "../../components/Admin/ButtonSubmit";
+import { Pagination } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 const ProductsAdmin = () => {
   const [openModal, setOpenModal] = useState(false);
   const [statusProduct, setStatus] = useState(true);
@@ -25,7 +27,10 @@ const ProductsAdmin = () => {
   const { products, dispatch } = useContext(ProductContext);
   const [AddOrUpdate, setAddOrUpdate] = useState<string>("ADD");
   const [valueSearch, setValueSearch] = useState<string>("");
-  
+  const [idProduct, setIdProduct] = useState<string>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1");
+  const [totalPage, setTotalPage] = useState();
 
   const {
     register,
@@ -35,17 +40,23 @@ const ProductsAdmin = () => {
   } = useForm<IProduct>({
     resolver: zodResolver(ProductSchemaValid),
   });
+
   const handleUploadImageProduct = async (e: any) => {
     try {
       const fileForms = e.target.files;
-      setFiles(fileForms);
-      if ([...files].length > 0) {
-        setFiles(_.uniqBy([...files, ...fileForms], "name"));
+      if (AddOrUpdate === "ADD") {
+        setFiles(fileForms);
+        if ([...files].length > 0) {
+          setFiles(_.uniqBy([...files, ...fileForms], "name"));
+        }
+      } else {
+        setFiles([...files, ...fileForms]);
       }
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
+
   const onSubmit = async (dataForm: IProduct) => {
     try {
       if (isValid) {
@@ -66,32 +77,58 @@ const ProductsAdmin = () => {
         );
         return response.data.secure_url;
       });
-      const { name, price, price_discount, categoryId } = dataForm;
       const urls = await Promise.all(uploadCloud);
-      const { data } = await instance.post("products", {
-        name,
-        price,
-        price_discount,
-        slug: slugify(name),
-        images: urls,
-        status: statusProduct,
-        categoryId,
-      });
-      if (data) {
-        setActive(false);
+      const { name, price, price_discount, categoryId } = dataForm;
+
+      if (AddOrUpdate === "ADD") {
+        const { data } = await instance.post("products", {
+          name,
+          price,
+          price_discount,
+          slug: slugify(name),
+          images: urls,
+          status: statusProduct,
+          categoryId,
+        });
+
+        if (data) {
+          setActive(false);
+        }
+        reset();
+        setStatus(true);
+        setOpenModal(false);
+        dispatch({
+          type: "ADD",
+          payload: data.data,
+        });
+        toast.success("Thêm sản phẩm thành công!");
+      } else {
+        const { data } = await instance.put(`products/${idProduct}`, {
+          name,
+          price,
+          price_discount,
+          slug: slugify(name),
+          images: urls,
+          status: statusProduct,
+          categoryId,
+        });
+        if (data) {
+          setActive(false);
+        }
+        reset();
+        setStatus(true);
+        setOpenModal(false);
+        dispatch({
+          type: "UPDATE",
+          payload: data.data,
+        });
+        toast.success("Sửa sản phẩm thành công !");
       }
-      reset();
-      setStatus(true);
-      setOpenModal(false);
-      dispatch({
-        type: "ADD",
-        payload: data.data,
-      });
-      toast.success("Thêm sản phẩm thành công!");
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
+
   useEffect(() => {
     (async () => {
       try {
@@ -110,6 +147,9 @@ const ProductsAdmin = () => {
   const handleRemoveImage = (image_name: string) => {
     setFiles([...files].filter((file) => file.name !== image_name));
   };
+  const handleRemoveImageUrl = (url: string) => {
+    setFiles([...files].filter((file) => file !== url));
+  };
 
   const handleRemoveProduct = async (id: string) => {
     try {
@@ -125,18 +165,18 @@ const ProductsAdmin = () => {
   const fillDataProduct = async (id: string) => {
     try {
       const { data } = await instance.get(`products/${id}`);
-      console.log(data);
       setFiles(data.data.images);
       reset({
         ...data.data,
         categoryId: data.data.categoryId._id,
         images: files,
       });
+      setIdProduct(id);
+      setAddOrUpdate("UPDATE");
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
-
   const handleUpdateStatusProduct = async (
     id: string,
     statusProduct: boolean
@@ -159,6 +199,31 @@ const ProductsAdmin = () => {
       toast.error(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    (() => {
+      reset({});
+      setStatus(true);
+      setFiles([]);
+      setAddOrUpdate("ADD");
+    })();
+  }, [openModal === false]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setSearchParams({ page: String(page) });
+      const { data } = await instance(`products/pagination?page=${page}`);
+      dispatch({
+        type: "LIST",
+        payload: data.data,
+      });
+      setTotalPage(data.totalPages);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    })();
+  }, [page]);
 
   return (
     <div className="products-admin">
@@ -214,7 +279,7 @@ const ProductsAdmin = () => {
         size={"lg"}
       >
         <Modal.Header>
-          {/* {AddOrUpdate === "ADD" ? "Thêm" : "Sửa"} danh mục */}
+          {AddOrUpdate === "ADD" ? "Thêm" : "Sửa"} sản phẩm
         </Modal.Header>
         <Modal.Body>
           <LoadingOverlay active={isActive} spinner>
@@ -223,7 +288,7 @@ const ProductsAdmin = () => {
                 <div className="space-y-3.5 w-full">
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="name-category"
+                      htmlFor="name-product"
                       className="font-medium text-sm"
                     >
                       Tên sản phẩm
@@ -333,6 +398,7 @@ const ProductsAdmin = () => {
                       <FileInput
                         id="dropzone-file"
                         className="hidden"
+                        sizing={'sm'}
                         multiple
                         {...register("images", {
                           onChange(event) {
@@ -357,10 +423,17 @@ const ProductsAdmin = () => {
                           >
                             <div className="flex items-center justify-betweenv w-full gap-2">
                               <div className="max-w-[100px] w-full h-full">
-                                <img
-                                  src={URL.createObjectURL(file as any)}
-                                  className="rounded-md inline-block object-cover"
-                                />
+                                {typeof file === "string" ? (
+                                  <img
+                                    src={file}
+                                    className="rounded-md inline-block object-cover"
+                                  />
+                                ) : (
+                                  <img
+                                    src={URL.createObjectURL(file)}
+                                    className="rounded-md inline-block object-cover"
+                                  />
+                                )}
                               </div>
                               <div className="max-w-[150px] w-full">
                                 <p className="text-sm overflow-ellipsis whitespace-nowrap overflow-hidden w-full">
@@ -374,8 +447,13 @@ const ProductsAdmin = () => {
                               </div>
                               <button
                                 onClick={() => {
-                                  handleRemoveImage(file.name);
+                                  if (typeof file === "string") {
+                                    handleRemoveImageUrl(file);
+                                  } else {
+                                    handleRemoveImage(file.name);
+                                  }
                                 }}
+                                type="button"
                                 className="w-fit mx-auto block h-fit rounded-full hover:bg-red-100 hover:shadow"
                               >
                                 <svg
@@ -408,17 +486,20 @@ const ProductsAdmin = () => {
                       checked={statusProduct}
                       {...register("status")}
                       className="my-7"
+                      sizing={'sm'}
                       onChange={setStatus}
                     />
                   </div>
                 </div>
-                <ButtonSubmit content="Thêm sản phẩm" />
+                <ButtonSubmit
+                  content={`${AddOrUpdate === "ADD" ? "Thêm" : "Sửa"} sản phẩm`}
+                />
               </form>
             </div>
           </LoadingOverlay>
         </Modal.Body>
       </Modal>
-      <div className="overflow-x-auto w-full mt-8">
+      <div className="overflow-x-auto w-full mt-8 space-y-5">
         <Table hoverable className="table w-full">
           <Table.Head className="text-center">
             <Table.HeadCell>STT</Table.HeadCell>
@@ -443,7 +524,7 @@ const ProductsAdmin = () => {
                     key={product._id}
                   >
                     <Table.Cell>{index + 1}</Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {" "}
                       <Highlighter
                         highlightClassName="YourHighlightClass"
@@ -466,6 +547,7 @@ const ProductsAdmin = () => {
                       <ToggleSwitch
                         checked={product.status}
                         className="mx-auto"
+                        sizing={'sm'}
                         onChange={() => {
                           setStatus(!product.status);
                           handleUpdateStatusProduct(
@@ -541,6 +623,16 @@ const ProductsAdmin = () => {
               })}
           </Table.Body>
         </Table>
+        <Pagination
+          count={totalPage}
+          variant="outlined"
+          color="primary"
+          className="float-end"
+          page={Number(page)}
+          onChange={(e, value) => {
+            setSearchParams({ page: String(value) });
+          }}
+        />
       </div>
     </div>
   );

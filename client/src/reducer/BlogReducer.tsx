@@ -16,7 +16,6 @@ const BlogReducer = (state:any,action:any) => {
         return state.filter((item:IBlog)=>{
             return item._id !== action.payload
         })
-  
     default:
         break;
   }

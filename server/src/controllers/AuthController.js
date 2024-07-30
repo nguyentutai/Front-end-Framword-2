@@ -41,7 +41,9 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     // Kiểm tra email tồn tại chưa
-    const userExist = await userSchema.findOne({ email });
+    const userExist = await userSchema
+      .findOne({ email })
+      .select("-commentId -blogId -createdAt -orderId -updatedAt -voucherId");
     if (!userExist) {
       return res.status(400).json({ message: "Account does not exist" });
     }
@@ -61,13 +63,7 @@ export const login = async (req, res) => {
     return res.status(201).json({
       message: "Login Successfully",
       token,
-      data: {
-        email: userExist.email,
-        username: userExist.username,
-        role: userExist.role,
-        status: userExist.status,
-        avatar: userExist.avatar,
-      },
+      data: userExist,
     });
   } catch (error) {
     return res.status(400).send(error.message);

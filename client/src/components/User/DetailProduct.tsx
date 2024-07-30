@@ -3,10 +3,12 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 import { useEffect, useState } from "react";
 import ImageZoom from "react-image-zooom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import instance from "../../instance/instance";
 import { IProduct } from "../../interfaces/IProduct";
 import ProductList from "./ProductList";
+import { toast } from "react-toastify";
+import { useCart } from "../../context/CartContext";
 function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
   event.preventDefault();
   console.info("You clicked a breadcrumb.");
@@ -16,8 +18,9 @@ export default function DetailProduct() {
   const [imageZoom, setImageZoom] = useState<string>("");
   const [imageList, setImageList] = useState<string[]>([]);
   const [count, setCount] = useState(1);
-
   const { slug } = useParams();
+  const { dispatch } = useCart();
+  const nav = useNavigate();
   useEffect(() => {
     (async () => {
       const { data } = await instance.get("/products/detail/" + slug);
@@ -26,6 +29,40 @@ export default function DetailProduct() {
       setProduct(data.data);
     })();
   }, [slug]);
+
+  // Thêm sản phẩm vào giỏ hàng
+  const handleAddToCard = async () => {
+    try {
+      if (localStorage.getItem("user")) {
+        const data = await instance.post("/cart", {
+          productId: product._id,
+          quantity: 1,
+          userId: JSON.parse(localStorage.getItem("user") as string)?._id,
+        });
+        if (data) {
+          dispatch({
+            type: "ADD_PRODUCT_TO_CART",
+            payload: {
+              productId: {
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                price_discount: product.price_discount,
+                images: product.images,
+              },
+              quantity: count,
+            },
+          });
+          toast.success("Thêm giỏ hàng thành công");
+        }
+      } else {
+        toast.warning("Vui lòng đăng nhập để mua hàng");
+        nav("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className=" bg-[#E7EBEF] py-2 dark:bg-[#1E2832]">
@@ -116,7 +153,10 @@ export default function DetailProduct() {
                 </button>
               </div>
               <div>
-                <button className="bg-red-600 rounded-3xl hover:bg-red-600/80 px-4 py-2 text-sm font-bold text-white flex items-center gap-2">
+                <button
+                  onClick={handleAddToCard}
+                  className="bg-red-600 rounded-3xl hover:bg-red-600/80 px-4 py-2 text-sm font-bold text-white flex items-center gap-2"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -144,8 +184,8 @@ export default function DetailProduct() {
             </h3>
           </div>
           <div className="grid lg:grid-cols-5 grid-cols-2 md:grid-cols-4 lg:gap-10 gap-3 mt-10">
-            {product?.categoryId?.productId?.slice(0, 5).map((pro) => (
-              <ProductList product={pro} />
+            {product?.categoryId?.productId?.slice(0, 5).map((pro, index) => (
+              <ProductList key={index} product={pro} />
             ))}
           </div>
         </section>

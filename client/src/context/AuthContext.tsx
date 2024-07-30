@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { User } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 import { useNavigate } from "react-router-dom";
 
 export interface AuthContextType {
-  user: User | null;
-  login: (token: string, user: User) => void;
+  user: IUser | null;
+  login: (token: string, user: IUser) => void;
   logout: () => void;
+  updateProfile: (user: IUser) => void;
   isAdmin: boolean;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -20,7 +21,7 @@ export const useAuth = () => {
   return context;
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const nav = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = (token: string, user: User) => {
+  const login = (token: string, user: IUser) => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
@@ -41,12 +42,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     setUser(null);
-    nav("/login");
+  };
+
+  const updateProfile = (user: IUser) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAdmin: user?.role === "admin" }}
+      value={{
+        user,
+        login,
+        logout,
+        updateProfile,
+        isAdmin: user?.role === "admin",
+      }}
     >
       {children}
     </AuthContext.Provider>

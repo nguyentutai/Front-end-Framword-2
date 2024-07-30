@@ -1,18 +1,23 @@
-import HeaderAdmin from "../../components/Admin/HeaderAdmin"
-import MainContentAdmin from "../../components/Admin/MainContentAdmin"
-import SideBarAdmin from "../../components/Admin/SideBarAdmin"
-
+import HeaderAdmin from "../../components/Admin/HeaderAdmin";
+import MainContentAdmin from "../../components/Admin/MainContentAdmin";
+import SideBarAdmin from "../../components/Admin/SideBarAdmin";
+import UserProvider from "../../context/UserContext";
+import VoucherProvider from "../../context/VoucherContext";
 
 const LayoutAdmin = () => {
   return (
     <>
-        <div className="ms-0 lg:ms-[230px]">
-            <HeaderAdmin />
+      <div className="ms-0 lg:ms-[230px]">
+        <HeaderAdmin />
+        <UserProvider>
+          <VoucherProvider>
             <MainContentAdmin />
-        </div>
-        <SideBarAdmin />
+          </VoucherProvider>
+        </UserProvider>
+      </div>
+      <SideBarAdmin />
     </>
-  )
-}
+  );
+};
 
-export default LayoutAdmin
+export default LayoutAdmin;
