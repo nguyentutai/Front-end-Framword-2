@@ -57,7 +57,7 @@ export default function NewsPage() {
             <ul className="p-0">
               <li className="flex items-center mb-3.5 pb-3 border-b border-gray-300 hover:bg-gray-100">
                 <a
-                  href="https://hex-wp.com/gamemart/blog_1/"
+                  href=""
                   className="flex items-center text-[#333] w-full py-2 px-3"
                 >
                   <img
