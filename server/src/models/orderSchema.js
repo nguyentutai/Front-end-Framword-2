@@ -26,8 +26,11 @@ const OrderModel = new mongoose.Schema(
     productItem: [
       {
         productId: {
-          type: mongoose.Types.ObjectId,
-          ref: "products",
+          name: String,
+          price: Number,
+          price_discount: Number,
+          images: [String],
+          category: String,
         },
         quantity: Number,
       },

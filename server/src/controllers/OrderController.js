@@ -19,10 +19,7 @@ class OrderController {
   }
   async getOrderById(req, res) {
     try {
-      const data = await orderSchema
-        .findById(req.params.id)
-        .populate("userId")
-        .populate("cartItem");
+      const data = await orderSchema.findById(req.params.id).populate("userId");
       if (data) {
         return res.status(200).json({
           message: "GetOrderById Successfully",
@@ -37,8 +34,7 @@ class OrderController {
     try {
       const data = await orderSchema
         .findOne({ userId: req.params.userId })
-        .populate("userId")
-        .populate("cartItem");
+        .populate("userId");
       if (data) {
         return res.status(200).json({
           message: "GetOrderByUser Successfully",
