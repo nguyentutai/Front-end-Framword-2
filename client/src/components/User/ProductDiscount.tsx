@@ -39,6 +39,7 @@ const ProductDiscount = ({ product }: { product: IProduct }) => {
       console.log(error);
     }
   };
+
   return (
     <div className="rounded-2xl bg-white shadow-lg grid grid-cols-2 p-4 gap-3 relative m-2">
       <div className="max-w-[200px] min-h-[200px] relative">

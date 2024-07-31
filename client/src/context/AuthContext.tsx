@@ -22,6 +22,7 @@ export const useAuth = () => {
 };
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
+  // const { dispatch } = useCart();
   const nav = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -35,6 +36,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
+    // useEffect(() => {
+    //   (async () => {
+    //     if (localStorage.getItem("user")) {
+    //       const { data } = await instance.get(
+    //         "cart/" + user._id
+    //       );
+    //       dispatch({
+    //         type: "LIST_CART",
+    //         payload: data.data.products,
+    //       });
+    //     }
+    //   })();
+    // }, []);
     nav(user.role === "admin" ? "/admin" : "/");
   };
 

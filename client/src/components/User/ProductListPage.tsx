@@ -42,6 +42,7 @@ export default function ProductListPage() {
   }, [page, sort, slug]);
 
   useEffect(() => {
+    console.log(1);
     (async () => {
       if (slug) {
         const { data } = await instance.get(
