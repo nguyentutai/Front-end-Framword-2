@@ -148,6 +148,10 @@ const Header = () => {
   }, [cart]);
   // Logout
   const handleLogout = () => {
+    dispatch({
+      type: "LIST_CART",
+      payload: [],
+    });
     logout();
     handleClose();
   };
@@ -169,21 +173,6 @@ const Header = () => {
       console.log(error);
     }
   };
-
-  // const updateCart = async () => {
-  //   try {
-  //     if (cart.products && localStorage.getItem("user")) {
-  //       await instance.put(
-  //         `cart/${JSON.parse(localStorage.getItem("user") as string)._id}`,
-  //         {
-  //           products: cart.products,
-  //         }
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <>
@@ -553,7 +542,7 @@ const Header = () => {
                             onClick={() =>
                               dispatch({
                                 type: "UPDATE_COUNT_PRODUCT_DECREASE",
-                                payload: pro._id,
+                                payload: pro.productId._id,
                               })
                             }
                           >
@@ -569,7 +558,7 @@ const Header = () => {
                             onClick={() =>
                               dispatch({
                                 type: "UPDATE_COUNT_PRODUCT_INCREASE",
-                                payload: pro._id,
+                                payload: pro.productId._id,
                               })
                             }
                           >

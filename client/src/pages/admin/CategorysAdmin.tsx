@@ -111,7 +111,7 @@ const CategorysAdmin = () => {
   // fill data in form Category and do update
   const fillDataCategory = async (id: string) => {
     try {
-      const { data } = await instance.get(`categorys/${id}`);
+      const { data } = await instance.get(`categorys/detail/${id}`);
       const { _id, name, slug, status } = data.data;
       reset({ name });
       setIdCategory(_id);
