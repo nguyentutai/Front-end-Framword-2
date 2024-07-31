@@ -1,5 +1,6 @@
 import { Router } from "express";
 import OrderController from "../controllers/OrderController.js";
+import SendOrderMail from "../controllers/SendOrderMail.js";
 
 const orderRouter = Router();
 
@@ -10,6 +11,8 @@ orderRouter.get("/", OrderModel.getAllOrders);
 orderRouter.get("/:id", OrderModel.getOrderById);
 // Thêm đơn hàng
 orderRouter.post("/", OrderModel.addOrder);
+
+// orderRouter.post("/send-mail-order/:id", SendOrderMail);
 // Cập nhật trạng thái đơn hàng
 orderRouter.put("/:id", OrderModel.updateStatusOrder);
 

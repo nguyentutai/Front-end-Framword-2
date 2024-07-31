@@ -27,6 +27,8 @@ import ScrollToTop from "./utils/ScrollTop.tsx";
 import NewsPage from "./components/User/NewsPage.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
 import Order from "./components/Cart/Order.tsx";
+import OrdersAdmin from "./pages/admin/OrdersAdmin.tsx";
+import ContactUs from "./components/User/ContactUs.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -46,6 +48,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                       <Route path="news/:slug" element={<NewsPage />} />
                       <Route path="detail/:slug" element={<DetailProduct />} />
                       <Route path="products" element={<ProductList />} />
+                      <Route path="contactus" element={<ContactUs />} />
                       <Route path="products/:slug" element={<ProductList />} />
                       <Route path="register" element={<AuthForm />} />
                       <Route path="login" element={<AuthForm isLogin />} />
@@ -54,6 +57,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <Route path="admin" element={<LayoutAdmin />}>
                       <Route path="categorys" element={<CategorysAdmin />} />
                       <Route path="products" element={<ProductsAdmin />} />
+                      <Route path="orders" element={<OrdersAdmin />} />
                       <Route path="users" element={<UsersAdmin />} />
                       <Route path="blogs" element={<BlogsAdmin />} />
                       <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />
