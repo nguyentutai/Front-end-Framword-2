@@ -26,7 +26,7 @@ const cartReducer = (state: any, action: any) => {
       return {
         ...state,
         products: state.products.map((pro: any) =>
-          pro._id == action.payload
+          pro.productId._id == action.payload
             ? { ...pro, quantity: Math.max(pro.quantity + 1) }
             : pro
         ),
@@ -35,7 +35,7 @@ const cartReducer = (state: any, action: any) => {
       return {
         ...state,
         products: state.products.map((pro: any) =>
-          pro._id == action.payload
+          pro.productId._id == action.payload
             ? { ...pro, quantity: Math.max(pro.quantity - 1, 1) }
             : pro
         ),

@@ -27,6 +27,7 @@ export default function Order() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
     trigger,
   } = useForm<OrderFormData>({ mode: "onChange" });
 
@@ -53,7 +54,7 @@ export default function Order() {
       if (isValidForm) {
         stepperRef?.current?.nextCallback();
       }
-    }, 1500);
+    }, 2000);
   };
 
   const updateCart = async () => {
@@ -69,6 +70,15 @@ export default function Order() {
       console.error("Error updating cart:", error);
     }
   };
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      const user = JSON.parse(localStorage.getItem("user") as string);
+      reset({
+        address_shopping: user.address,
+        name_shopping: user.username,
+      });
+    }
+  }, []);
 
   const handleDelete = async (id: string) => {
     try {
@@ -92,10 +102,11 @@ export default function Order() {
   const handleClick = () => {
     setValueVoucher(inputValue);
   };
+  console.log(cart.products);
   const addOrder = async () => {
     try {
       const users = JSON.parse(localStorage.getItem("user") as string);
-      console.log(users);
+      console.log(cart.products);
       if (users && idCart) {
         const data = await instance.post("/order", {
           userId: users._id,
@@ -182,7 +193,7 @@ export default function Order() {
                               onClick={() =>
                                 dispatch({
                                   type: "UPDATE_COUNT_PRODUCT_DECREASE",
-                                  payload: pro._id,
+                                  payload: pro.productId._id,
                                 })
                               }
                             >
@@ -194,7 +205,7 @@ export default function Order() {
                               onClick={() =>
                                 dispatch({
                                   type: "UPDATE_COUNT_PRODUCT_INCREASE",
-                                  payload: pro._id,
+                                  payload: pro.productId._id,
                                 })
                               }
                             >
