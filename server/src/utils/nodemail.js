@@ -16,7 +16,10 @@ export const sendEmail = async (email, emailSubject, emailBody, emailText) => {
 		});
 
 		const mailOptions = {
-			from: 'Hệ Thống Game Mart - Cửa Hàng Bán Phụ Kiện Gaming',
+			from:{
+                name:'Hệ Thống Game Mart - Cửa Hàng Bán Phụ Kiện Gaming',
+                address:EMAIL_USERNAME,
+            },
 			to: email,
 			subject: emailSubject,
             html: emailBody,
