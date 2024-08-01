@@ -107,6 +107,27 @@ class UserController {
       return res.status(400).send(error.message);
     }
   }
+  //update status user
+  async updateRoleUser(req, res) {
+    try {
+      const { role } = req.body;
+      const data = await userSchema.findByIdAndUpdate(
+        req.params.id,
+        { role },
+        { new: true }
+      );
+      if (data) {
+        return res.status(200).send({
+          message: "Update role user successfully !",
+          data,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
+
+  
 
   // async removeProductById(req, res) {
   //   try {
