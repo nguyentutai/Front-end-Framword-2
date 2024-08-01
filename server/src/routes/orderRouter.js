@@ -9,10 +9,11 @@ const OrderModel = new OrderController();
 orderRouter.get("/", OrderModel.getAllOrders);
 // Lấy đơn hàng theo id
 orderRouter.get("/:id", OrderModel.getOrderById);
+orderRouter.get("/detail/:userId", OrderModel.getOrderByUser);
 // Thêm đơn hàng
-orderRouter.post("/", OrderModel.addOrder);
+orderRouter.post("/", OrderModel.addOrder, SendOrderMail);
 
-// orderRouter.post("/send-mail-order/:id", SendOrderMail);
+// orderRouter.post("/send-mail-order/:id", );
 // Cập nhật trạng thái đơn hàng
 orderRouter.patch("/:id", OrderModel.updateStatusOrder);
 

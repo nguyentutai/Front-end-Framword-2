@@ -24,6 +24,13 @@ export const checkAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    return res.status(400).send(error.message);
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: "Token đã hết hạn, vui lòng đăng nhập lại",
+      });
+    }
+    return res.status(400).json({
+      message: "Vui lòng đăng nhập lại",
+    });
   }
 };

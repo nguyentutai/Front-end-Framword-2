@@ -36,20 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
-    // useEffect(() => {
-    //   (async () => {
-    //     if (localStorage.getItem("user")) {
-    //       const { data } = await instance.get(
-    //         "cart/" + user._id
-    //       );
-    //       dispatch({
-    //         type: "LIST_CART",
-    //         payload: data.data.products,
-    //       });
-    //     }
-    //   })();
-    // }, []);
-    nav(user.role === "admin" ? "/admin" : "/");
+    nav(user.role == "admin" ? "/admin" : "/");
   };
 
   const logout = () => {

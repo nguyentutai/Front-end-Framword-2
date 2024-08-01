@@ -29,6 +29,8 @@ import { CartProvider } from "./context/CartContext.tsx";
 import Order from "./components/Cart/Order.tsx";
 import OrdersAdmin from "./pages/admin/OrdersAdmin.tsx";
 import ContactUs from "./components/User/ContactUs.tsx";
+import DetailOrders from "./components/User/DetailOrder.tsx";
+import PrivateAdmin from "./middlewares/PrivateAdmin.tsx";
 import DetailOrder from "./pages/admin/DetailOrder.tsx";
 import DashboardAdmin from "./pages/admin/DashboardAdmin.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -45,31 +47,35 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     {/* User */}
                     <Route element={<LayoutUser />}>
                       <Route index element={<HomePage />} />
-                      <Route path="blogs" element={<BlogPage />} />
                       <Route path="order" element={<Order />} />
                       <Route path="news/:slug" element={<NewsPage />} />
+                      <Route path="news" element={<BlogPage />} />
                       <Route path="detail/:slug" element={<DetailProduct />} />
                       <Route path="products" element={<ProductList />} />
-                      <Route path="contactus" element={<ContactUs />} />
+                      <Route path="contact" element={<ContactUs />} />
                       <Route path="products/:slug" element={<ProductList />} />
+                      <Route path="detailOrder" element={<DetailOrders />} />
                       <Route path="register" element={<AuthForm />} />
                       <Route path="login" element={<AuthForm isLogin />} />
                     </Route>
                     {/* Admin */}
-                    <Route path="admin" element={<LayoutAdmin />}>
-                      <Route index element={<DashboardAdmin />} />
-                      <Route path="categorys" element={<CategorysAdmin />} />
-                      <Route path="products" element={<ProductsAdmin />} />
-                      <Route path="orders" element={<OrdersAdmin />} />
-                      <Route
+                    <Route path="/admin" element={<PrivateAdmin />}>
+                      <Route path="/admin" element={<LayoutAdmin />}>
+                        <Route path="categorys" element={<CategorysAdmin />} />
+                        <Route path="products" element={<ProductsAdmin />} />
+                        <Route path="orders" element={<OrdersAdmin />} />
+                        <Route
                         path="orders/detail/:_id"
                         element={<DetailOrder />}
                       />
-                      <Route path="users" element={<UsersAdmin />} />
-                      <Route path="blogs" element={<BlogsAdmin />} />
-                      <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />
-                      <Route path="vouchers" element={<VouchersAdmin />} />
-                    </Route>
+                        <Route path="users" element={<UsersAdmin />} />
+                        <Route path="blogs" element={<BlogsAdmin />} />
+                        <Route
+                          path="blogs/:_id"
+                          element={<UpdateBlogAdmin />}
+                        />
+                        <Route path="vouchers" element={<VouchersAdmin />} />
+                      </Route>
                   </Route>
                 </Routes>
               </BlogProvider>

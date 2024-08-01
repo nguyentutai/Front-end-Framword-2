@@ -1,16 +1,21 @@
 
-import { IUser } from "./IUser";
+import { IProduct } from "./IProduct";
 
-export interface IOrder{
-    _id?:string,
-    userId:IUser,
-    totalPrice:number,
-    name_shopping:string,
-    address_shopping:string,
-    phone_shopping:string,
-    subtotalPrice:number,
-    productItem:[productId:any,quantity:number]
-    status: "pending" | string,
-    isHidden:false
-    createdAt:any
+export interface IOrder {
+  _id?: string;
+  name_shopping: string;
+  address_shopping: string;
+  code_Order: string;
+  phone_shopping: string;
+  productItem: [
+    {
+      productId: IProduct;
+      quatity: number;
+      _id: string;
+    }
+  ];
+  subtotalPrice: number;
+  status: "pending" | string,
+  createdAt: string;
 }
+

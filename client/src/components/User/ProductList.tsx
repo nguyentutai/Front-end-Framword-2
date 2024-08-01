@@ -1,8 +1,45 @@
 import { Rating } from "@mui/material";
 import { IProduct } from "../../interfaces/IProduct";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
+import instance from "../../instance/instance";
+import { toast } from "react-toastify";
 
 export default function ProductList({ product }: { product: IProduct }) {
+  const { dispatch } = useCart();
+  const nav = useNavigate();
+  const hanldeAddToCart = async () => {
+    try {
+      if (localStorage.getItem("user")) {
+        const data = await instance.post("/cart", {
+          productId: product._id,
+          quantity: 1,
+          userId: JSON.parse(localStorage.getItem("user") as string)?._id,
+        });
+        if (data) {
+          dispatch({
+            type: "ADD_PRODUCT_TO_CART",
+            payload: {
+              productId: {
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                price_discount: product.price_discount,
+                images: product.images,
+              },
+              quantity: 1,
+            },
+          });
+          toast.success("Thêm giỏ hàng thành công");
+        }
+      } else {
+        toast.warning("Vui lòng đăng nhập để mua hàng");
+        nav("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="text-center relative max-h-[400px] overflow-hidden group grid grid-rows-2 gap-3 shadow-pro rounded-xl py-5">
       <div className="max-w-[200px] min-h-28 relative mx-auto rounded-xl overflow-hidden">
@@ -39,7 +76,10 @@ export default function ProductList({ product }: { product: IProduct }) {
           />
         </div>
         <div className="absolute top-8 right-0 space-y-3 translate-x-12 group-hover:-translate-x-4 duration-500">
-          <div className="bg-primary rounded-full text-util p-1.5 cursor-pointer opacity-100 hover:opacity-80 duration-500">
+          <div
+            onClick={hanldeAddToCart}
+            className="bg-primary rounded-full text-util p-1.5 cursor-pointer opacity-100 hover:opacity-80 duration-500"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

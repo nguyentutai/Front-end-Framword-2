@@ -3,7 +3,7 @@ import voucherSchema from "../models/voucherSchema.js";
 class VoucherController {
   async getAllVoucher(req, res) {
     try {
-      const data = await voucherSchema.find({}).sort({createdAt:-1});
+      const data = await voucherSchema.find({}).sort({ createdAt: -1 });
       if (data) {
         return res.status(201).send({
           message: "GetAll Voucher Successfully",
@@ -28,7 +28,19 @@ class VoucherController {
       return res.status(400).send(error.message);
     }
   }
-
+  async getVoucherByCode(req, res) {
+    try {
+      const data = await voucherSchema.findOne({ code: req.params.code });
+      if (data) {
+        return res.status(201).send({
+          message: "GetVoucherByCode Successfully",
+          data,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
   async postVoucher(req, res) {
     try {
       // Thêm voucher
@@ -71,10 +83,14 @@ class VoucherController {
     }
   }
 
-  async updateStatusVoucher(req,res){
+  async updateStatusVoucher(req, res) {
     try {
-      const {status}=req.body
-      const data=await voucherSchema.findByIdAndUpdate(req.params.id,{status},{new:true})
+      const { status } = req.body;
+      const data = await voucherSchema.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
       if (data) {
         return res.status(200).send({
           message: "Update Status Voucher Successfully",
