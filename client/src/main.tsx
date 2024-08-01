@@ -61,13 +61,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     {/* Admin */}
                     <Route path="/admin" element={<PrivateAdmin />}>
                       <Route path="/admin" element={<LayoutAdmin />}>
+                        <Route index element={<DashboardAdmin />} />
                         <Route path="categorys" element={<CategorysAdmin />} />
                         <Route path="products" element={<ProductsAdmin />} />
                         <Route path="orders" element={<OrdersAdmin />} />
                         <Route
-                        path="orders/detail/:_id"
-                        element={<DetailOrder />}
-                      />
+                          path="orders/detail/:_id"
+                          element={<DetailOrder />}
+                        />
                         <Route path="users" element={<UsersAdmin />} />
                         <Route path="blogs" element={<BlogsAdmin />} />
                         <Route
@@ -76,6 +77,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                         />
                         <Route path="vouchers" element={<VouchersAdmin />} />
                       </Route>
+                    </Route>
                   </Route>
                 </Routes>
               </BlogProvider>
