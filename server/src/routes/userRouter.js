@@ -10,5 +10,6 @@ userRouter.get("/:id", userControll.getUserById);
 userRouter.put("/profile", checkAuth, userControll.updateUser);
 userRouter.put("/:id", userControll.updateUser);
 userRouter.patch("/:id", userControll.updateStatusUser);
+userRouter.patch("/role/:id", userControll.updateRoleUser);
 
 export default userRouter;

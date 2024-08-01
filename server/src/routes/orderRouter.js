@@ -15,6 +15,6 @@ orderRouter.post("/", OrderModel.addOrder, SendOrderMail);
 
 // orderRouter.post("/send-mail-order/:id", );
 // Cập nhật trạng thái đơn hàng
-orderRouter.put("/:id", OrderModel.updateStatusOrder);
+orderRouter.patch("/:id", OrderModel.updateStatusOrder);
 
 export default orderRouter;

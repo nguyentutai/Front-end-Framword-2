@@ -1,6 +1,7 @@
 import HeaderAdmin from "../../components/Admin/HeaderAdmin";
 import MainContentAdmin from "../../components/Admin/MainContentAdmin";
 import SideBarAdmin from "../../components/Admin/SideBarAdmin";
+import OrdersProvider from "../../context/OrderContext";
 import UserProvider from "../../context/UserContext";
 import VoucherProvider from "../../context/VoucherContext";
 
@@ -11,7 +12,9 @@ const LayoutAdmin = () => {
         <HeaderAdmin />
         <UserProvider>
           <VoucherProvider>
-            <MainContentAdmin />
+            <OrdersProvider>
+              <MainContentAdmin />
+            </OrdersProvider>
           </VoucherProvider>
         </UserProvider>
       </div>

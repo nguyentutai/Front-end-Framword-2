@@ -1,3 +1,4 @@
+
 import { IProduct } from "./IProduct";
 
 export interface IOrder {
@@ -14,6 +15,7 @@ export interface IOrder {
     }
   ];
   subtotalPrice: number;
-  status: string;
+  status: "pending" | string,
   createdAt: string;
 }
+
