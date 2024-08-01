@@ -4,9 +4,14 @@ class OrderController {
   async getAllOrders(req, res) {
     try {
       const data = await orderSchema
-        .find()
-        .populate("userId")
-        .populate("cartItem");
+        .find({})
+        .populate({
+          path: "userId",
+          options: {
+            select: "-password -role",
+          },
+        }).sort({createAt:-1})
+
       if (data) {
         return res.status(200).json({
           message: "GetAllOrders Successfully",
@@ -19,7 +24,12 @@ class OrderController {
   }
   async getOrderById(req, res) {
     try {
-      const data = await orderSchema.findById(req.params.id).populate("userId");
+      const data = await orderSchema.findById(req.params.id).populate({
+        path: "userId",
+        options: {
+          select: "-password -role",
+        },
+      })
       if (data) {
         return res.status(200).json({
           message: "GetOrderById Successfully",

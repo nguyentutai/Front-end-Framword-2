@@ -29,6 +29,8 @@ import { CartProvider } from "./context/CartContext.tsx";
 import Order from "./components/Cart/Order.tsx";
 import OrdersAdmin from "./pages/admin/OrdersAdmin.tsx";
 import ContactUs from "./components/User/ContactUs.tsx";
+import DetailOrder from "./pages/admin/DetailOrder.tsx";
+import DashboardAdmin from "./pages/admin/DashboardAdmin.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -55,9 +57,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     </Route>
                     {/* Admin */}
                     <Route path="admin" element={<LayoutAdmin />}>
+                      <Route index element={<DashboardAdmin />} />
                       <Route path="categorys" element={<CategorysAdmin />} />
                       <Route path="products" element={<ProductsAdmin />} />
                       <Route path="orders" element={<OrdersAdmin />} />
+                      <Route
+                        path="orders/detail/:_id"
+                        element={<DetailOrder />}
+                      />
                       <Route path="users" element={<UsersAdmin />} />
                       <Route path="blogs" element={<BlogsAdmin />} />
                       <Route path="blogs/:_id" element={<UpdateBlogAdmin />} />

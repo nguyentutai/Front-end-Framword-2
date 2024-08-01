@@ -28,7 +28,8 @@ const UsersAdmin = () => {
 
   const handleUpdateRoleUser = async ({role}:IUser) => {
     try {
-      const {data}=await instance.put(`users/${idUser}`,{
+      console.log(role);
+      const {data}=await instance.patch(`users/role/${idUser}`,{
         role
       })
       if (data) {
@@ -64,6 +65,7 @@ const UsersAdmin = () => {
   const getDataUser=async (id:string)=>{
     try {
       const {data}= await instance.get(`users/${id}`)
+      console.log(data);
       reset({
         role:data.data.role
       })
