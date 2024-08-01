@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function ContactUs() {
   return (
-    <>
+    <div className="container-main">
       <div className="bg-gray-200 p-2">
         <div className="container mx-auto">
           <Link to="/" className="text-blue-600">
@@ -98,6 +98,6 @@ export default function ContactUs() {
           </form>
         </div>
       </main>
-    </>
+    </div>
   );
 }

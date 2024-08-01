@@ -33,8 +33,8 @@ class OrderController {
   async getOrderByUser(req, res) {
     try {
       const data = await orderSchema
-        .findOne({ userId: req.params.userId })
-        .populate("userId");
+        .find({ userId: req.params.userId })
+        .populate("userId", "address avatar email name username");
       if (data) {
         return res.status(200).json({
           message: "GetOrderByUser Successfully",
@@ -45,15 +45,17 @@ class OrderController {
       return res.status(400).send(error.message);
     }
   }
-  async addOrder(req, res) {
+  async addOrder(req, res, next) {
     try {
       const data = await orderSchema.create(req.body);
       if (data) {
-        return res.status(200).json({
+        res.status(200).json({
           message: "GetOrderByUser Successfully",
           data: data,
         });
       }
+      req.order = data;
+      next();
     } catch (error) {
       return res.status(400).send(error.message);
     }

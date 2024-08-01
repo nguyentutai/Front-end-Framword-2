@@ -212,7 +212,7 @@ class ProductController {
       });
       return res.status(200).json({
         message: "Search Product Successfully",
-        data,
+        data: data,
       });
     } catch (error) {
       return res.status(500).json({

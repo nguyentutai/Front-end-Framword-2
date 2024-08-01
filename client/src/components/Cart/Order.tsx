@@ -7,6 +7,7 @@ import { useCart } from "../../context/CartContext";
 import instance from "../../instance/instance";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { RandomString } from "../../utils/RandomOrder";
 export interface OrderFormData {
   name_shopping: string;
   phone_shopping: string;
@@ -18,7 +19,6 @@ export default function Order() {
   const [totalOrder, setTotalOrder] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [valueVoucher, setValueVoucher] = useState("");
   const [idCart, setIdCart] = useState<string>("");
   const [detailOrder, setDetailOrder] = useState({} as OrderFormData);
   const nav = useNavigate();
@@ -32,10 +32,11 @@ export default function Order() {
   } = useForm<OrderFormData>({ mode: "onChange" });
 
   useEffect(() => {
-    const total = cart.products.reduce(
-      (acc: any, item: any) => acc + item.quantity * item.productId.price,
-      0
-    );
+    const total = cart.products.reduce((acc: number, item: any) => {
+      const price =
+        Number(item.productId.price_discount) || Number(item.productId.price);
+      return acc + price * item.quantity;
+    }, 0);
     setTotalPrice(total);
     setTotalOrder(total);
   }, [cart]);
@@ -99,24 +100,35 @@ export default function Order() {
   const handleChange = (event: any) => {
     setInputValue(event.target.value);
   };
-  const handleClick = () => {
-    setValueVoucher(inputValue);
+  const handleClick = async () => {
+    try {
+      const { data } = await instance.get(`vouchers/code/${inputValue}`);
+      if (data.data) {
+        setTotalOrder(totalOrder - totalOrder * (data.data.discount / 100));
+        toast.success(
+          `Áp dụng mã giảm giá thành công. Bạn được giảm ${data.data.discount}%`
+        );
+      }
+    } catch (error) {
+      toast.success("Mã giảm giá không chính xác");
+    }
   };
-  console.log(cart.products);
+
   const addOrder = async () => {
+    const codeOrder = RandomString();
     try {
       const users = JSON.parse(localStorage.getItem("user") as string);
-      console.log(cart.products);
       if (users && idCart) {
         const data = await instance.post("/order", {
           userId: users._id,
+          code_Order: `GAMEMART${codeOrder}`,
           subtotalPrice: totalOrder,
           name_shopping: detailOrder.name_shopping,
           address_shopping: detailOrder.address_shopping,
           phone_shopping: detailOrder.phone_shopping,
           productItem: cart.products,
+          totalPrice: totalPrice,
         });
-        console.log(data.data);
         if (data.data) {
           toast.success("Đặt hàng thành công");
           await instance.delete(`cart/${idCart}`);
@@ -184,7 +196,14 @@ export default function Order() {
                           </div>
                           <div>
                             <p className="font-semibold text-red-500 text-lg">
-                              ${(pro.productId.price * pro.quantity).toFixed(1)}
+                              $
+                              {pro.productId.price_discount != 0
+                                ? (
+                                    pro.productId.price_discount * pro.quantity
+                                  ).toFixed(1)
+                                : (pro.productId.price * pro.quantity).toFixed(
+                                    1
+                                  )}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Navbar } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import LoadingOverlay from "react-loading-overlay-ts";
 import Menu from "@mui/material/Menu";
 import Fade from "@mui/material/Fade";
 import { CategorysContext } from "../../context/CategoryContext";
@@ -17,13 +18,13 @@ import instance from "../../instance/instance";
 import { toast } from "react-toastify";
 import Avatar from "@mui/material/Avatar";
 import { useCart } from "../../context/CartContext";
+import { IProduct } from "../../interfaces/IProduct";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 function stringToColor(string: string) {
   let hash = 0;
   let i;
 
-  /* eslint-disable no-bitwise */
   for (i = 0; i < string.length; i += 1) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
@@ -34,7 +35,6 @@ function stringToColor(string: string) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-  /* eslint-enable no-bitwise */
 
   return color;
 }
@@ -49,15 +49,20 @@ function stringAvatar(name: string) {
 }
 
 const Header = () => {
+  const nav = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
-  const { categorys } = useContext(CategorysContext);
   const [isOpen, setIsOpen] = useState(false);
-  const { user, updateProfile, logout } = useAuth();
+  const [isActive, setActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const [isOpens, setIsOpens] = useState(false);
-  const handleCloses = () => setIsOpens(false);
   const [openModal, setOpenModal] = useState(false);
+  const { user, updateProfile, logout } = useAuth();
+  const { categorys } = useContext(CategorysContext);
+  const [value, setValue] = useState<string>("");
+  const [dataPro, setDataPro] = useState<IProduct[]>([]);
+  const [dataSearch, setDataSearch] = useState<IProduct[]>([]);
+  const open = Boolean(anchorEl);
+  const handleCloses = () => setIsOpens(false);
   // Lấy thông tin giỏ hàng
   const { cart, dispatch } = useCart();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -105,9 +110,12 @@ const Header = () => {
     const imgWindow = window.open(src);
     imgWindow?.document.write(image.outerHTML);
   };
+
+  // Cập nhật profile
   const onSubmit = async (datas: IUser) => {
     try {
       if (datas && localStorage.getItem("user")) {
+        setActive(true);
         const imageUser = await UploadCoudiary(fileList[0]?.thumbUrl);
         const { data } = await instance.put(`users/profile`, {
           ...datas,
@@ -119,11 +127,21 @@ const Header = () => {
           setFileList([]);
           toast.success("Updated profile Successfully");
         }
+        setActive(false);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      setActive(false);
+      if (error.response?.status === 401) {
+        toast.error("Token hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
+        nav("/login");
+      } else {
+        toast.error(error.response?.data?.message || "Có lỗi xảy ra.");
+        nav("/login");
+      }
     }
   };
+
+  // Lấy dữ liệu giỏ hàng
   useEffect(() => {
     (async () => {
       if (localStorage.getItem("user")) {
@@ -152,10 +170,12 @@ const Header = () => {
       type: "LIST_CART",
       payload: [],
     });
+    nav("/");
     logout();
     handleClose();
   };
 
+  // Xóa sản phẩm trong giỏ hàng
   const handleDelete = async (id: string) => {
     try {
       if (localStorage.getItem("user")) {
@@ -173,6 +193,32 @@ const Header = () => {
       console.log(error);
     }
   };
+
+  // Tìm kiếm sản phẩm
+  // useEffect(() => {
+  //   if (value) {
+  //     (async () => {
+  //       const { data } = await instance.get(
+  //         `products/search/pro?keyword=${value}`
+  //       );
+  //       setDataSearch(data.data);
+  //     })();
+  //   }
+  // }, [value]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await instance.get("products");
+      setDataPro(data.data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    let searchData = [...dataPro];
+    searchData = searchData.filter((pro) =>
+      pro.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSearch(searchData);
+  }, [value]);
 
   return (
     <>
@@ -248,9 +294,10 @@ const Header = () => {
                   alt=""
                 />
               </Link>
-              <div className="border hidden lg:flex max-w-[200px] md:max-w-sm w-full items-center outline-none px-2 rounded-3xl py-[10px] dark:bg-[#1C2329]">
+              <div className="border relative hidden lg:flex max-w-[200px] md:max-w-sm w-full items-center outline-none px-2 rounded-3xl py-[10px] dark:bg-[#1C2329]">
                 <input
                   placeholder="Search..."
+                  onChange={(e) => setValue(e.target.value)}
                   className="border-0 outline-none w-full text-sm px-2 bg-util dark:bg-[#1C2329]"
                 />
                 <svg
@@ -267,7 +314,40 @@ const Header = () => {
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                   />
                 </svg>
+                {value && (
+                  <div className="absolute -bottom-8 top-[120%] border w-full min-h-[400px] overflow-auto bg-white p-3 rounded-md">
+                    {dataSearch && dataSearch.length > 0 ? (
+                      dataSearch.map((pro, index) => (
+                        <Link
+                          to={`detail/${pro.slug}`}
+                          key={index}
+                          onClick={() => setValue("")}
+                          className="flex gap-5 border rounded-xl p-4 py-2"
+                        >
+                          <div className="max-w-16">
+                            <img
+                              className="w-16 h-16 rounded-xl"
+                              src={pro.images[0]}
+                              alt={pro.slug}
+                            />
+                          </div>
+                          <div>
+                            <div>
+                              <h3>{pro.name}</h3>
+                            </div>
+                            <div>
+                              <span>{pro.price}</span>
+                            </div>
+                          </div>
+                        </Link>
+                      ))
+                    ) : (
+                      <div>Không có sản phẩm bạn tìm kiếm</div>
+                    )}
+                  </div>
+                )}
               </div>
+
               <div className="flex gap-7">
                 <Link
                   to={""}
@@ -322,23 +402,45 @@ const Header = () => {
                     <div>
                       <button
                         onClick={() => setOpenModal(true)}
-                        className="text-sm hover:text-primary duration-300"
+                        className="text-sm hover:text-primary cursor-pointer duration-300"
                       >
                         Chỉnh sửa thông tin
                       </button>
                     </div>
-                    <div className="py-2">
-                      <Link
-                        className="text-sm  hover:text-primary duration-300"
-                        to={""}
-                      >
-                        Lịch sử đơn hàng
-                      </Link>
-                    </div>
+                    {user?.role == "admin" ? (
+                      <div>
+                        <div className="pt-2">
+                          <Link
+                            className="text-sm cursor-pointer hover:text-primary duration-300"
+                            to={"/admin"}
+                          >
+                            Đến trang quản trị
+                          </Link>
+                        </div>
+
+                        <div className="pb-2 pt-2">
+                          <Link
+                            className="text-sm cursor-pointer hover:text-primary duration-300"
+                            to={"/detailOrder"}
+                          >
+                            Lịch sử đơn hàng
+                          </Link>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-2">
+                        <Link
+                          className="text-sm cursor-pointer hover:text-primary duration-300"
+                          to={"/detailOrder"}
+                        >
+                          Lịch sử đơn hàng
+                        </Link>
+                      </div>
+                    )}
                     <div>
                       <div
                         onClick={handleLogout}
-                        className="text-sm hover:text-primary duration-300"
+                        className="text-sm hover:text-primary cursor-pointer duration-300"
                       >
                         Đăng xuất
                       </div>
@@ -347,7 +449,7 @@ const Header = () => {
                 </Menu>
                 {user && user ? (
                   <div
-                    className="flex items-center gap-4"
+                    className="flex items-center gap-4 cursor-pointer"
                     aria-controls={open ? "fade-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
@@ -475,15 +577,10 @@ const Header = () => {
                   >
                     Shop
                   </Link>
+
                   <Link
                     className="ms-3 hover:text-red-600 duration-300 text-base"
                     to={"/news"}
-                  >
-                    News
-                  </Link>
-                  <Link
-                    className="ms-3 hover:text-red-600 duration-300 text-base"
-                    to={"/blogs"}
                   >
                     Pages
                   </Link>
@@ -566,7 +663,12 @@ const Header = () => {
                           </button>
                         </div>{" "}
                         <span className="text-xs font-bold">
-                          ${pro.productId.price * pro.quantity}.0
+                          $
+                          {pro.productId.price_discount != 0
+                            ? (
+                                pro.productId.price_discount * pro.quantity
+                              ).toFixed(1)
+                            : (pro.productId.price * pro.quantity).toFixed(1)}
                         </span>
                       </div>
                     </div>
@@ -640,79 +742,86 @@ const Header = () => {
         >
           <Modal.Header />
           <Modal.Body>
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-              <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-                Chỉnh sửa thông tin
-              </h3>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="name" value="Your username" />
-                </div>
-                <TextInput
-                  id="name"
-                  {...register("username")}
-                  placeholder="Tên tài khoản"
-                />
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="name" value="Your name" />
-                </div>
-                <TextInput id="name" {...register("name")} placeholder="Tên" />
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="address" value="Your address" />
-                </div>
-                <TextInput
-                  id="address"
-                  type="text"
-                  {...register("address")}
-                  placeholder="exam: Số 1/Đống Đa/Hà Nội"
-                />
-              </div>
-              <div className=" gap-16">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="address"
-                    value="Your Image"
-                    className="pb-3 block"
+            <LoadingOverlay active={isActive} spinner>
+              <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  Chỉnh sửa thông tin
+                </h3>
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="name" value="Your username" />
+                  </div>
+                  <TextInput
+                    id="name"
+                    {...register("username")}
+                    placeholder="Tên tài khoản"
                   />
                 </div>
-                <div className="flex gap-4">
-                  <ImgCrop rotationSlider>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture-card"
-                      fileList={fileList}
-                      onChange={onChange}
-                      onPreview={onPreview}
-                    >
-                      {fileList.length < 1 && "+ Upload"}
-                    </Upload>
-                  </ImgCrop>
-                  {JSON.parse(localStorage.getItem("user") as string)?.avatar &&
-                    fileList.length == 0 && (
-                      <div>
-                        <img
-                          className="w-24 rounded-md"
-                          src={
-                            JSON.parse(localStorage.getItem("user") as string)
-                              .avatar
-                          }
-                          alt=""
-                        />
-                      </div>
-                    )}
-                  <div>
-                    <img src="" alt="" />
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="name" value="Your name" />
+                  </div>
+                  <TextInput
+                    id="name"
+                    {...register("name")}
+                    placeholder="Tên"
+                  />
+                </div>
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="address" value="Your address" />
+                  </div>
+                  <TextInput
+                    id="address"
+                    type="text"
+                    {...register("address")}
+                    placeholder="exam: Số 1/Đống Đa/Hà Nội"
+                  />
+                </div>
+                <div className=" gap-16">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="address"
+                      value="Your Image"
+                      className="pb-3 block"
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <ImgCrop rotationSlider>
+                      <Upload
+                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                        listType="picture-card"
+                        fileList={fileList}
+                        onChange={onChange}
+                        onPreview={onPreview}
+                      >
+                        {fileList.length < 1 && "+ Upload"}
+                      </Upload>
+                    </ImgCrop>
+                    {JSON.parse(localStorage.getItem("user") as string)
+                      ?.avatar &&
+                      fileList.length == 0 && (
+                        <div>
+                          <img
+                            className="w-24 rounded-md"
+                            src={
+                              JSON.parse(localStorage.getItem("user") as string)
+                                .avatar
+                            }
+                            alt=""
+                          />
+                        </div>
+                      )}
+                    <div>
+                      <img src="" alt="" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-full">
-                <Button type="submit">Submit</Button>
-              </div>
-            </form>
+                <div className="w-full">
+                  <Button type="submit">Submit</Button>
+                </div>
+              </form>
+            </LoadingOverlay>
           </Modal.Body>
         </Modal>
       </header>

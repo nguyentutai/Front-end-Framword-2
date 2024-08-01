@@ -10,6 +10,7 @@ const VoucherModel = new VoucherController();
 voucherRouter.get("/", VoucherModel.getAllVoucher);
 // Lấy voucher theo id
 voucherRouter.get("/:id", VoucherModel.getVoucherById);
+voucherRouter.get("/code/:code", VoucherModel.getVoucherByCode);
 // Xóa cứng voucher
 voucherRouter.delete("/:id", VoucherModel.removeVoucherById);
 // Validate
