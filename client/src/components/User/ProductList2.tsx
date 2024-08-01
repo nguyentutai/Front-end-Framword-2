@@ -1,7 +1,45 @@
 import { Rating } from "@mui/material";
 import { IProduct } from "../../interfaces/IProduct";
+import instance from "../../instance/instance";
+import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ProductList2({ product }: { product: IProduct }) {
+  const { dispatch } = useCart();
+  const nav = useNavigate();
+  const hanldeAddToCart = async () => {
+    try {
+      if (localStorage.getItem("user")) {
+        const data = await instance.post("/cart", {
+          productId: product._id,
+          quantity: 1,
+          userId: JSON.parse(localStorage.getItem("user") as string)?._id,
+        });
+        if (data) {
+          dispatch({
+            type: "ADD_PRODUCT_TO_CART",
+            payload: {
+              productId: {
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                price_discount: product.price_discount,
+                images: product.images,
+              },
+              quantity: 1,
+            },
+          });
+          toast.success("Thêm giỏ hàng thành công");
+        }
+      } else {
+        toast.warning("Vui lòng đăng nhập để mua hàng");
+        nav("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="overflow-hidden flex gap-10 px-10 group shadow-catelist rounded-lg py-2 dark:bg-util">
       <div className="max-w-[200px] min-w-44 flex justify-center relative rounded-xl overflow-hidden">
@@ -38,7 +76,10 @@ export default function ProductList2({ product }: { product: IProduct }) {
           />
         </div>
         <div className="pt-3 flex items-center gap-3">
-          <button className="bg-red-500 rounded-2xl px-4 py-2 text-xs text-white font-semibold hover:bg-primary duration-500">
+          <button
+            onClick={hanldeAddToCart}
+            className="bg-red-500 rounded-2xl px-4 py-2 text-xs text-white font-semibold hover:bg-primary duration-500"
+          >
             Add to card
           </button>
           <div className="hover:bg-primary hover:text-white duration-500 cursor-pointer rounded-full p-1.5 border">

@@ -4,19 +4,13 @@ import { sendEmail } from "../utils/nodemail.js";
 
 const SendOrderMail = async (req, res) => {
   try {
+    console.log(req.order);
     const order = await orderSchema
-      .findById(req.params.id)
+      .findById(req.order._id.toString())
       .populate({
         path: "userId",
         options: {
           select: "-password -role",
-        },
-      })
-      .populate({
-        path: "productItem",
-        populate: {
-          path: "productId",
-          model: "products",
         },
       });
 
@@ -25,16 +19,20 @@ const SendOrderMail = async (req, res) => {
       theme: "salted",
       product: {
         name: "Game Mart",
-        link: "http://localhost:5173/",
+        link: "http://localhost:5173",
         logo: "https://res.cloudinary.com/dgn4zfscw/image/upload/v1722275237/logo_homepage_3_royfkf.png",
       },
     });
 
     const tableData = order.productItem.map((item) => {
+      const price = item.productId.price_discount
+        ? item.productId.price_discount.toFixed(1)
+        : item.productId.price.toFixed(1);
+
       return {
         name: item.productId.name,
         quantity: item.quantity,
-        price: `$${item.productId.price_discount}`,
+        price: `$${price}`,
       };
     });
 
@@ -42,7 +40,19 @@ const SendOrderMail = async (req, res) => {
       body: {
         name: order.userId.username,
         table: {
-          data: tableData,
+          data: [
+            ...tableData,
+            {
+              productName: "Voucher",
+              quantity: "",
+              price: `${100 - (order.subtotalPrice / order.totalPrice) * 100}%`,
+            },
+            {
+              productName: "Total Price",
+              quantity: "",
+              price: `$${order.subtotalPrice.toFixed(1)}`,
+            },
+          ],
           columns: [
             {
               header: "Product Name",
@@ -63,11 +73,11 @@ const SendOrderMail = async (req, res) => {
           button: {
             color: "#3869D4",
             text: "Go to Dashboard",
-            link: "http://localhost:5173",
+            link: "http://localhost:5173/detailOrder",
           },
         },
         dictionary: {
-          name:order.name_shopping,
+          name: order.name_shopping,
           address: order.address_shopping,
         },
       },

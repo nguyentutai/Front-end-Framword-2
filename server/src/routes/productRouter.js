@@ -26,7 +26,7 @@ productRouter.delete("/:id", ProductModel.removeProductById);
 // Xóa mềm sản phẩm
 productRouter.patch("/:id", ProductModel.softRemoveProductById);
 // Tìm kiếm sản phẩm theo tên
-productRouter.get("/search", ProductModel.searchProduct);
+productRouter.get("/search/pro", ProductModel.searchProduct);
 // Đường dẫn
 // http://localhost:3000/api/product/search?keyword="${keyword}"
 

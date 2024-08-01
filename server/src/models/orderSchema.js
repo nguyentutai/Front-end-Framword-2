@@ -7,6 +7,11 @@ const OrderModel = new mongoose.Schema(
       ref: "users",
       required: true,
     },
+    code_Order: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     totalPrice: {
       type: Number,
     },
@@ -21,7 +26,6 @@ const OrderModel = new mongoose.Schema(
     },
     subtotalPrice: {
       type: Number,
-      required: true,
     },
     productItem: [
       {
@@ -37,8 +41,8 @@ const OrderModel = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ["pending", "processing", "completed", "cancelled"],
-      default: "pending",
+      enum: ["Chờ xác nhận", "Đang xử lý", "Hoàn thành", "Đã hủy bỏ"],
+      default: "Chờ xác nhận",
     },
     isHidden: {
       type: Boolean,

@@ -25,15 +25,15 @@ export default function NewsPage() {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
     const h1Tags = doc.querySelectorAll("h1");
-    h1Tags.forEach((tag) => tag.remove()); // Xóa tất cả các thẻ <h1>
-    return doc.body.innerHTML; // Trả về HTML đã xử lý
+    h1Tags.forEach((tag) => tag.remove());
+    return doc.body.innerHTML;
   }
   useEffect(() => {
     if (blog.content) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(blog.content, "text/html");
       const h1text = doc.querySelector("h1");
-      setParsedContent(h1text?.innerHTML || "");
+      setParsedContent(h1text?.innerText || "");
       const newDate = blog.updatedAt ? blog.updatedAt.slice(0, 10) : "";
       setFormattedDate(ReverseDateFormat(newDate));
     }
@@ -51,7 +51,7 @@ export default function NewsPage() {
             <div>{HTMLReactParser(contentNew)}</div>
           </article>
         </div>
-        <aside className="w-[37.5%] p-5 mb-5 rounded-lg border border-gray-300">
+        <aside className="w-[37.5%] p-5 mb-5 rounded-lg border dark:bg-util border-gray-300">
           <div className="recent-posts">
             <h3 className="mb-3 text-lg font-semibold">Recent Posts</h3>
             <ul className="p-0">
@@ -61,7 +61,7 @@ export default function NewsPage() {
                   className="flex items-center text-[#333] w-full py-2 px-3"
                 >
                   <img
-                    src="images/shark.jpg"
+                    src="../../../public/images/game1.jpg"
                     alt="Great White Shark"
                     className="max-w-[7.50rem] h-auto mr-3.5 rounded"
                   />
@@ -76,7 +76,7 @@ export default function NewsPage() {
                   className="flex items-center text-[#333] w-full py-2 px-3"
                 >
                   <img
-                    src="images/game1.jpg"
+                    src="../../../public/images/game2.jpg"
                     alt="Game Image"
                     className="max-w-[7.50rem] h-auto mr-3.5 rounded"
                   />
@@ -91,7 +91,7 @@ export default function NewsPage() {
                   className="flex items-center text-[#333] w-full py-2 px-3"
                 >
                   <img
-                    src="images/game2.jpg"
+                    src="../../../public/images/game3.jpg"
                     alt="Game Image"
                     className="max-w-[7.50rem] h-auto mr-3.5 rounded"
                   />
@@ -102,13 +102,13 @@ export default function NewsPage() {
               </li>
             </ul>
           </div>
-          <div className="tags p-5 mb-5 rounded-lg border border-gray-300">
+          <div className="tags p-5 mb-5 rounded-lg border dark:bg-util border-gray-300">
             <h3 className="mb-3 text-lg font-semibold">Tags</h3>
             <ul className="flex flex-col p-0">
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Accessories
                 </a>
@@ -116,7 +116,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Action
                 </a>
@@ -124,7 +124,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Adventure
                 </a>
@@ -132,20 +132,20 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   RPG
                 </a>
               </li>
             </ul>
           </div>
-          <div className="categories p-5 mb-5 rounded-lg border border-gray-300">
+          <div className="categories p-5 mb-5 rounded-lg border dark:bg-util border-gray-300">
             <h3 className="mb-3 text-lg font-semibold">Product Categories</h3>
             <ul className="p-0">
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Accessories
                 </a>
@@ -153,7 +153,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Action
                 </a>
@@ -161,7 +161,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Adventures
                 </a>
@@ -169,7 +169,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Console
                 </a>
@@ -177,7 +177,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Gamepad
                 </a>
@@ -185,7 +185,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   Games
                 </a>
@@ -193,7 +193,7 @@ export default function NewsPage() {
               <li className="mb-3.5 border-b border-gray-300">
                 <a
                   href="#"
-                  className="text-[#333] block py-2 px-3 hover:bg-[#007bff] hover:text-[#fff]"
+                  className="text-[#333] block py-2 px-3 rounded-lg duration-300 hover:bg-[#007bff] hover:text-[#fff]"
                 >
                   HeadPhone
                 </a>
